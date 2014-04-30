@@ -5,7 +5,10 @@
 </head>
 <body>
   <a href="javascript:;">基本对话框</a><br>
-  <a href="javascript:;">确认选择框</a>
+  <a href="javascript:;">确认选择框</a><br>
+  <a href="javascript:;">成功</a><br>
+  <a href="javascript:;">警告</a><br>
+  <a href="javascript:;">错误</a><br>
   <script type="text/javascript" src="./js/lib/jquery.js"></script>
   <script type="text/javascript" src="./js/src/dialog.js"></script>
   <script type="text/javascript">
@@ -19,6 +22,15 @@
     }).on('cancel', function() {
       this.destroy();
     });
+  });
+  $('a').eq(2).on('click', function() {
+    new Alert('成功啦！', 'success').show();
+  });
+  $('a').eq(3).on('click', function() {
+    new Alert('有猫腻了！', 'warn').show();
+  });
+  $('a').eq(4).on('click', function() {
+    new Alert('出错了！', 'error').show();
   });
   </script>
 </body>

@@ -241,6 +241,10 @@
           this._$dialog.remove();
           this._overlay.destroy();
           this._drag.destroy();
+        },
+        setTitleColor: function(colorStr) {
+          this._$dialog.find('.title span').css('color', colorStr);
+          return this;
         }
       });
     }
@@ -249,10 +253,12 @@
 
   // confirm对话框
   var Confirm = function(content) {
+    this._content = content;
+
     if (!arguments.callee.prototype._init) {
       $.extend(arguments.callee.prototype, eventDealer, {
         _init: function() {
-          this._$content = $('<div>' + content + '</div>');
+          this._$content = $('<div>' + this._content + '</div>');
           this._$foot = $([
             '<div>',
               '<a href="javascript:;" class="ok">确定</a>',
@@ -299,6 +305,62 @@
     arguments.callee.prototype._init.call(this);
   };
 
+  // 确定对话框（包括错误、警告、成功对话框）
+  var Alert = function(content, typ) {
+    this._typ = typ;
+    this._content = content;
+
+    if (!arguments.callee.prototype._init) {
+      $.extend(arguments.callee.prototype, eventDealer, {
+        _init: function() {
+          var titleParam = 
+            this._typ === 'error' ? {text: '错误', color: 'red'} :
+            this._typ === 'warn' ? {text: '警告', color: 'yellow'} :
+            this._typ === 'success' ? {text: '成功', color: 'green'} : {text: '未知类型的对话框', color: 'black'};
+          this._$foot = $('<div><a href="javascript:;">确定</a></div>');
+
+          // 样式
+          this._$foot.css({
+            textAlign: 'right'
+          }).find('a').css({
+            textDecoration: 'none',
+            color: 'black'
+          }).hover(function() {
+            $(this).css({textDecoration: 'underline'});
+          }, function() {
+            $(this).css({textDecoration: 'none'});
+          });
+
+          this._dialog = new Dialog({
+            content: this._content,
+            title: titleParam.text,
+            footVisible: true,
+            foot: this._$foot,
+            height: 'auto',
+            width: 350
+          }).setTitleColor(titleParam.color);
+
+          var _this = this;
+          this._$foot.find('a').on('click', function() {
+            _this.destroy();
+          });
+        },
+        show: function() {
+          this._dialog.show();
+        },
+        hide: function() {
+          this._dialog.hide();
+        },
+        destroy: function() {
+          this._dialog.destroy();
+        }
+      });
+    }
+
+    arguments.callee.prototype._init.call(this);
+  };
+
   window.Dialog = Dialog;
   window.Confirm = Confirm;
+  window.Alert = Alert;
 })();
