@@ -4,8 +4,22 @@
   <title></title>
 </head>
 <body>
-
+  <a href="javascript:;">基本对话框</a><br>
+  <a href="javascript:;">确认选择框</a>
   <script type="text/javascript" src="./js/lib/jquery.js"></script>
   <script type="text/javascript" src="./js/src/dialog.js"></script>
+  <script type="text/javascript">
+  $('a').eq(0).on('click', function () {
+    new Dialog().show();
+  });
+  $('a').eq(1).on('click', function () {
+    new Confirm('确认选择？').show().
+    on('ok', function() {
+      alert('ok');
+    }).on('cancel', function() {
+      this.destroy();
+    });
+  });
+  </script>
 </body>
 </html>
