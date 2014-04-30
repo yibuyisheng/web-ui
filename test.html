@@ -13,10 +13,11 @@
     new Dialog().show();
   });
   $('a').eq(1).on('click', function () {
-    new Confirm('确认选择？').show().on('ok', function() {
+    new Confirm('确认选择？').show().
+    on('ok', function() {
       alert('ok');
     }).on('cancel', function() {
-      alert('cancel');
+      this.destroy();
     });
   });
   </script>
