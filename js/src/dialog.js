@@ -79,7 +79,8 @@
       });
     }
 
-    arguments.callee.prototype._init.call(this);
+    //arguments.callee.prototype._init.call(this);
+    this._init();
   };
 
   // 拖动
@@ -133,7 +134,8 @@
       });
     }
 
-    arguments.callee.prototype._init.call(this);
+    //arguments.callee.prototype._init.call(this);
+    this._init();
   };
 
   // 对话框
@@ -244,7 +246,8 @@
         }
       });
     }
-    arguments.callee.prototype._init.call(this);
+    // arguments.callee.prototype._init.call(this);
+    this._init();
   };
 
   // confirm对话框
@@ -296,7 +299,8 @@
       });
     }
 
-    arguments.callee.prototype._init.call(this);
+    // arguments.callee.prototype._init.call(this);
+    this._init();
   };
 
   window.Dialog = Dialog;
