@@ -1,5 +1,10 @@
 (function() {
-  // 找到$container下面z-index树中第二层最大的
+  /**
+   * 找到指定元素下面第一层最大的z-index
+   * @method [findMaxZIndex] 
+   * @param {jquery object} $container 
+   * @return {number} 最大的z-index值
+   */
   var findMaxZIndex = function($container) {
     var children = $container.children();
     if (!children.length) return null;
@@ -79,13 +84,14 @@
       });
     }
 
-    //arguments.callee.prototype._init.call(this);
     this._init();
   };
 
-  // 拖动
-  // @param {jquery object} $box 需要移动的元素
-  // @param {jquery object} $target 鼠标操作的元素
+  /**
+   * 拖动
+   * @param {jquery object} $box 需要移动的元素
+   * @param {jquery object} $target 鼠标操作的元素
+   */
   var Drag = function($box, $target) {
     this._$box = $box;
     this._$target = $target;
@@ -134,7 +140,6 @@
       });
     }
 
-    //arguments.callee.prototype._init.call(this);
     this._init();
   };
 
@@ -167,7 +172,7 @@
       'titleVisible': true,                      // 对话框标题是否可见
       'title': 'title',                          // 对话框的标题
       'content': 'content',                      // 对话框的内容，html字符串或者jquery对象
-      'footVisible': true,                        // 对话框底部内容是否可见
+      'footVisible': true,                       // 对话框底部内容是否可见
       'foot': 'foot',                            // 对话框底部的内容，html字符串
 
       // 对话框位置和大小相关的参数
@@ -246,7 +251,7 @@
         }
       });
     }
-    // arguments.callee.prototype._init.call(this);
+    
     this._init();
   };
 
@@ -299,7 +304,6 @@
       });
     }
 
-    // arguments.callee.prototype._init.call(this);
     this._init();
   };
 
