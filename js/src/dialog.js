@@ -53,7 +53,8 @@
           $('body').append(this._$overlay);
           var maxZIndex = findMaxZIndex($('body'));
           this._$overlay.css({
-            position: 'absolute', 
+            position: 'fixed', 
+            display: 'none',
             background: 'black',
             opacity: 0.5,
             left: 0,
@@ -69,6 +70,12 @@
         },
         show: function() {
           return this._$overlay.show(), this;
+        },
+        fadeIn: function() {
+          return this._$overlay.fadeIn.apply(this._$overlay, arguments), this;
+        },
+        fadeOut: function() {
+          return this._$overlay.fadeOut.apply(this._$overlay, arguments), this;
         },
         hide: function() {
           return this._$overlay.hide(), this;
@@ -143,7 +150,7 @@
       '.dialog .title{height:30px;background:lightblue;line-height:30px;font-weight:bold;font-size:14px;}',
       '.dialog .title span{margin-left:10px;}',
       '.dialog .close{text-decoration:none;color:black;float:right;margin-right:10px;}',
-      '.dialog .content{padding:10px;}',
+      '.dialog .content{padding:10px;height:auto;min-height:0;width:auto;}',
       '.dialog .foot{padding:10px;}',
     '</style>'
   ].join('');
@@ -186,7 +193,7 @@
 
     // 判断函数是否已经定义了
     if (!arguments.callee.prototype._init) {
-      $.extend(arguments.callee.prototype, {
+      $.extend(arguments.callee.prototype, eventDealer, {
         _init: function() {
           // 添加css
           if (!$('head name[web-ui-dialog]').length) $('head').append(cssTpl);
@@ -209,38 +216,56 @@
           this._options.left !== null && this._$dialog.css('left', this._options.left);
           this._options.top !== null && this._$dialog.css('top', this._options.top);
 
-          this._options.overlayVisible && (this._overlay = new Overlay().show());
+          this._options.overlayVisible && (this._overlay = new Overlay());
 
           this._options.draggable && (this._drag = new Drag(this._$dialog, this._$dialog.find('.title')));
 
           // 让对话框显示在最上层
           var maxZIndex = findMaxZIndex($('body'));
-          this._$dialog.css('z-index', maxZIndex ? (maxZIndex + 1) : 0).show();
+          this._$dialog.css('z-index', maxZIndex ? (maxZIndex + 1) : 0);
 
           this._bindEvent();
         },
         // 显示对话框
         show: function() {
-          return this._$dialog.show(), this;
+          this._$dialog.show();
+          this._overlay && this._overlay.show();
+          return this;
+        },
+        fadeIn: function() {
+          this._$dialog.fadeIn.apply(this._$dialog, arguments);
+          this._overlay && this._overlay.fadeIn.apply(this._overlay, arguments);
+          return this;
+        },
+        fadeOut: function() {
+          this._$dialog.fadeOut.apply(this._$dialog, arguments);
+          this._overlay && this._overlay.fadeOut.apply(this._overlay, arguments);
+          return this;
         },
         _bindEvent: function() {
           var _this = this;
           this._$dialog.find('>.title .close').on('click', function() {
             _this.destroy();
           });
-          this._overlay.on('click', function() {
+          this._overlay && this._overlay.on('click', function() {
             _this.destroy();
           });
         },
         // 隐藏对话框
         hide: function() {
-          return this._$dialog.hide(), this._overlay.hide(), this;
+          this._$dialog.hide(); 
+          this._overlay && this._overlay.hide();
+          return this;
         },
         // 将对话框从dom树中移除
         destroy: function() {
+          this.trigger('beforeDestroy');
+
           this._$dialog.remove();
-          this._overlay.destroy();
+          this._overlay && this._overlay.destroy();
           this._drag.destroy();
+
+          this.trigger('afterDestroy');
         },
         setTitleColor: function(colorStr) {
           this._$dialog.find('.title span').css('color', colorStr);

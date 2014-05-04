@@ -13,7 +13,7 @@
   <script type="text/javascript" src="./js/src/dialog.js"></script>
   <script type="text/javascript">
   $('a').eq(0).on('click', function () {
-    new Dialog().show();
+    new Dialog({overlayVisible: false}).fadeIn('slow');
   });
   $('a').eq(1).on('click', function () {
     new Confirm('确认选择？').show().
