@@ -9,5 +9,7 @@
     destroy：将对话框及其相关的东西从文档中移除；
   
   Confirm：选择对话框<br />
-  Alert：确定对话框，分三种：成功、警告、错误
+  Alert：确定对话框，分三种：成功、警告、错误<br />
+  <br />
+  test.html中包含了demo
     
