@@ -203,7 +203,7 @@
       $.extend(arguments.callee.prototype, eventDealer, {
         _init: function() {
           // 添加css
-          if (!$('head name[web-ui-dialog]').length) $('head').append(cssTpl);
+          if (!$('head *[name="web-ui-dialog"]').length) $('head').append(cssTpl);
           // 将对话框模板添加到文档中
           this._$dialog = $(dlgTpl);
           $('body').append(this._$dialog);
