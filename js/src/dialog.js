@@ -117,8 +117,6 @@
             var xDistance = event.pageX - _this._prePageX;
             var yDistance = event.pageY - _this._prePageY;
 
-            console.log(xDistance + ':' + yDistance);
-
             _this._$box.css({
               left: parseFloat(_this._$box.css('left')) + xDistance, 
               top: parseFloat(_this._$box.css('top')) + yDistance
@@ -150,7 +148,7 @@
       '.dialog .title{height:30px;background:lightblue;line-height:30px;font-weight:bold;font-size:14px;}',
       '.dialog .title span{margin-left:10px;}',
       '.dialog .close{text-decoration:none;color:black;float:right;margin-right:10px;}',
-      '.dialog .content{padding:10px;}',
+      '.dialog .content{padding:10px;width: auto;min-height: 0;}',
       '.dialog .foot{padding:10px;}',
     '</style>'
   ].join('');
@@ -283,7 +281,7 @@
           });
 
           this._dialog = new Dialog({
-            title: '请抉择',
+            title: '请选择',
             content: this._$content,
             foot: this._$foot,
             height: 'auto'
