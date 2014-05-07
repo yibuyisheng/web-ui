@@ -9,16 +9,14 @@
     var children = $container.children();
     if (!children.length) return null;
     
-    var self = arguments.callee;
-
     var ret = null;
     $container.children().each(function() {
-      var zIndex = $(this).css('z-index');
+      var zIndex = $(this).css("z-index");
       if ($.isNumeric(zIndex)) {
-        (!ret || ret < zIndex) && (ret = zIndex);
+        if (!ret || ret < zIndex) ret = zIndex;
       } else {
-        var result = self.call(null, $(this));
-        (!ret || ($.isNumeric(result) && ret < result)) && (ret = result);
+        var result = arguments.callee.call(null, $(this));
+        if (!ret || ($.isNumeric(result) && ret < result)) ret = result;
       }
     });
 
@@ -40,7 +38,7 @@
       var _this = this;
       if (this._cbs && this._cbs[eventName]) {
         $.each(this._cbs[eventName], function() {
-          this instanceof Function && this.call(_this);
+          if (this instanceof Function) this.call(_this);
         });
       }
       return this;

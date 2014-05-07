@@ -2,6 +2,11 @@
 <html>
 <head>
   <title></title>
+  <style type="text/css">
+  .outer-test {width: 100px; height: 200px; background: red;}
+  .outer-test1 {width: 100px; height: 200px; background: blue;}
+  .outer-test2 {width: 50px; height: 100px; background: green;}
+  </style>
 </head>
 <body>
   <a href="javascript:;">基本对话框</a><br>
@@ -31,6 +36,23 @@
   });
   $('a').eq(4).on('click', function() {
     new Alert('出错了！', 'error').show();
+  });
+  </script>
+
+  <div class="outer-test">
+    <div class="outer-test2"></div>
+  </div>
+  <div class="outer-test1"></div>
+  <script type="text/javascript" src="./js/src/outer.js"></script>
+  <script type="text/javascript">
+  $(function() {
+    var cb = function() {
+      console.log(this);
+    };
+    $('.outer-test').outer(cb);
+    $('.outer-test1').outer(cb);
+    $('.outer-test2').outer(cb);
+    // $('.outer-test').offOuter(cb);
   });
   </script>
 </body>
