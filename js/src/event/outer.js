@@ -1,3 +1,4 @@
+// dependence: jQuery
 (function() {
 
   // 事件处理对象

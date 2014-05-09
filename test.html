@@ -15,7 +15,11 @@
   <a href="javascript:;">警告</a><br>
   <a href="javascript:;">错误</a><br>
   <script type="text/javascript" src="./js/lib/jquery.js"></script>
-  <script type="text/javascript" src="./js/src/dialog.js"></script>
+  <script type="text/javascript" src="./js/src/ui/utils.js"></script>
+  <script type="text/javascript" src="./js/src/event/eventDealer.js"></script>
+  <script type="text/javascript" src="./js/src/ui/Overlay.js"></script>
+  <script type="text/javascript" src="./js/src/ui/Drag.js"></script>
+  <script type="text/javascript" src="./js/src/ui/Dialog.js"></script>
   <script type="text/javascript">
   $('a').eq(0).on('click', function () {
     new Dialog({overlayVisible: false}).fadeIn('slow');
@@ -43,7 +47,7 @@
     <div class="outer-test2"></div>
   </div>
   <div class="outer-test1"></div>
-  <script type="text/javascript" src="./js/src/outer.js"></script>
+  <script type="text/javascript" src="./js/src/event/outer.js"></script>
   <script type="text/javascript">
   $(function() {
     var cb = function() {
