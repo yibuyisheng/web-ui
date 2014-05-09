@@ -47,7 +47,7 @@
     if (Array.prototype.forEach) {
       Array.prototype.forEach.call(array, callback, thisArg);
     } else {
-      for (var i = 0, il = array.length; i <= il; i += 1) {
+      for (var i = 0, il = array.length; i < il; i += 1) {
         callback.call(thisArg, array[i], i, array);
       }
     }
@@ -59,7 +59,7 @@
     if (!callback instanceof Function) return isArray ? [] : new ArrayExt();
 
     var ret = isArray ? [] : new ArrayExt();
-    for (var i = 0, il = array.length; i <= il; i += 1) {
+    for (var i = 0, il = array.length; i < il; i += 1) {
       ret.push(callback.call(array, array[i], i, array));
     }
     return ret;
@@ -68,7 +68,7 @@
     var array = this instanceof Array ? this : privateVariables[this._key].arr;
     if (!callback instanceof Function) return array;
 
-    for (var i = 0, il = array.length; i <= il; i += 1) {
+    for (var i = 0, il = array.length; i < il; i += 1) {
       if (callback.call(array, array[i], i, array)) break;
     }
 
@@ -80,7 +80,7 @@
     if (!filterFn instanceof Function) return isArray ? [] : new ArrayExt();
 
     var ret = isArray ? [] : new ArrayExt();
-    for (var i = 0, il = array.length; i <= il; i += 1) {
+    for (var i = 0, il = array.length; i < il; i += 1) {
       if (filterFn.call(array, array[i], i, array)) ret.push(array[i]);
     }
     return ret;
@@ -88,6 +88,10 @@
   ArrayExt.prototype.getHash = function() {
     return this._key;
   };
+  ArrayExt.prototype.destroy = function() {
+    privateVariables[this._key] = null;
+    delete privateVariables[this._key];
+  }
 
 
 
