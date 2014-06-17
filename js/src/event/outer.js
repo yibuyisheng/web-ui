@@ -20,29 +20,39 @@
     return ret.concat(arguments.callee($hashNode.parent()));
   };
 
-  $(document).on("click", function(event) {
-    var nodeList = findAllHashNodesFromCurrentNode($(event.target));
+  var bindDocumentEvent = function(eventName) {
+    $(document).on(eventName ? eventName : "click", function(event) {
+      var nodeList = findAllHashNodesFromCurrentNode($(event.target));
 
-    var obj = $.extend({}, eventCache);
-    $.each(nodeList, function() {
-      if (eventCache[$(this).data("jquery-outer-hash")]) {
-        obj[$(this).data("jquery-outer-hash")] = null;
-        delete obj[$(this).data("jquery-outer-hash")];
-      }
-    });
+      var obj = $.extend({}, eventCache);
+      $.each(nodeList, function() {
+        if (eventCache[$(this).data("jquery-outer-hash")]) {
+          obj[$(this).data("jquery-outer-hash")] = null;
+          delete obj[$(this).data("jquery-outer-hash")];
+        }
+      });
 
-    $.each(obj, function(k, v) {
-      $.each(v.cbs, function() {
-        this.call(v.$node[0], event);
+      $.each(obj, function(k, v) {
+        if (v.outerEvent !== event.type) return;
+        $.each(v.cbs, function() {
+          this.call(v.$node[0], event);
+        });
       });
     });
-  });
+  }
+  
 
   // 绑定outer事件
   var guid = 0;
-  $.fn.outer = function(cb) {
+  $.fn.onOuter = function(cb, opt) {
+    this.__opt = $.extend({
+      $otherBindElem: null,
+      outerEvent: 'click'
+    }, opt);
+
     var curNodeHash = "jquery-outer-" + guid ++;
-    $(this).data("jquery-outer-hash", curNodeHash);
+    $(this).data({"jquery-outer-hash": curNodeHash, "other-bind-elem": this.__opt.$otherBindElem});
+    if (this.__opt.$otherBindElem) this.__opt.$otherBindElem.data("jquery-outer-hash", curNodeHash);
 
     if (!eventCache[curNodeHash]) eventCache[curNodeHash] = {};
     if (!eventCache[curNodeHash].cbs) {
@@ -51,6 +61,9 @@
       eventCache[curNodeHash].cbs.push(cb);
     }
     eventCache[curNodeHash].$node = $(this);
+
+    eventCache[curNodeHash].outerEvent = this.__opt.outerEvent;
+    bindDocumentEvent(this.__opt.outerEvent);
   };
 
   // 取消绑定outer事件
@@ -59,15 +72,30 @@
     if (!hash) return;
     if (!eventCache[hash]) return;
 
+    var destroy = function() {
+      eventCache[hash] = null;
+      delete eventCache[hash];
+
+      if ($(this).data("other-bind-elem")) {
+        $(this).data("other-bind-elem").removeData("jquery-outer-hash");
+      }
+
+      $(this).removeData("jquery-outer-hash").removeData("other-bind-elem");
+    };
     if (cb instanceof Function) {
       var newCbs = [];
       $.each(eventCache[hash].cbs, function() {
         if (this !== cb) newCbs.push(this);
       });
-      eventCache[hash].cbs = newCbs;
+
+      if (newCbs.length === 0) {
+        destroy.call(this);
+      } else {
+        eventCache[hash].cbs = newCbs;
+      }
     } else {
-      eventCache[hash] = null;
-      delete eventCache[hash];
+      destroy.call(this);
     }
+    
   };
 })();
