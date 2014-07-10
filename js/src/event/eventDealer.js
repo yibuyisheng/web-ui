@@ -11,11 +11,11 @@
 
       return this;
     },
-    trigger: function(eventName) {
+    trigger: function(eventName, data) {
       var _this = this;
       if (this._cbs && this._cbs[eventName]) {
         $.each(this._cbs[eventName], function() {
-          if (this instanceof Function) this.call(_this);
+          if (this instanceof Function) this.call(_this, data);
         });
       }
       return this;
