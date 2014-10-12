@@ -7,3 +7,16 @@ Function.prototype.bind = function() {
     return _this.apply(obj, totalArgs);
   };
 }
+
+Array.prototype.reduce = function(callback, initialValue) {
+  if (Object.prototype.toString.call(callback) !== '[object Function]') return;
+
+  var arr = initialValue ? Array.prototype.concat.call(this, initialValue) : this;
+  if (arr.length < 2) return initialValue;
+
+  var previousValue = arr[0];
+  for (var i = 1, len = arr.length; i < len; i += 1) {
+    previousValue = callback(previousValue, this[i], i, this);
+  }
+  return previousValue;
+};
