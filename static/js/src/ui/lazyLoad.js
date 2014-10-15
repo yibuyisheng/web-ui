@@ -1,8 +1,11 @@
 // dependence: jQuery
 
 // 延迟加载，目前仅用于图片的延迟加载
-(function(global) {
-  var WEB_UI = global.WEB_UI;
+define([
+  'lib/jquery'
+], function(
+  $
+) {
 
   // 查看元素是否位于可视区域
   var _isInView = function($elem) {
@@ -50,5 +53,4 @@
     });
   };
 
-  global.WEB_UI.ui.lazyLoad = lazyLoad;
-})(window);
+});

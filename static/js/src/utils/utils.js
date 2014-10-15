@@ -1,6 +1,4 @@
-(function(global) {
-  var WEB_UI = global.WEB_UI = global.WEB_UI || {};
-
+define(function() {
   var toString = Object.prototype.toString;
 
   var isFunction = function(obj) {
@@ -12,11 +10,14 @@
   };
 
   // TODO: 实现extend方法
-  var extend = $.extend;
-  WEB_UI.extend = extend;
-  WEB_UI = extend(WEB_UI, {
+  var extend = function() {
+
+  };
+  
+  return {
     isFunction: isFunction,
     isArray: isArray,
+    extend: extend,
     bind: function(fn) {
       if (!isFunction(fn)) return;
 
@@ -62,7 +63,7 @@
 
       return map.call(arr, fn, thisArg);
     },
-    filter = function(arr, fn, thisArg) {
+    filter: function(arr, fn, thisArg) {
       if (!isArray(arr) || !isFunction(fn)) return arr;
 
       var map = Array.prototype.filter || function(fn) {
@@ -95,9 +96,7 @@
     chain: function(obj, fn, args) {
       var ret = fn.apply(obj, args);
       return typeof ret !== 'undefined' ? ret : obj;
-    };
-  });
+    }
+  };
 
-  global.WEB_UI = WEB_UI;
-
-})(window);
+});

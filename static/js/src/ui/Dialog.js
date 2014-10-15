@@ -1,9 +1,21 @@
 // dependence : jQuery, ui/utils.js[findMaxZIndex], eventDealer, Overlay, Drag
-(function() {
-  var findMaxZIndex = window.uiUtils.findMaxZIndex;
-  var eventDealer = window.eventDealer;
-  var Overlay = window.Overlay;
-  var Drag = window.Drag;
+define([
+  'src/ui/utils', 
+  'src/event/eventDealer', 
+  'src/ui/Overlay', 
+  'src/ui/Drag',
+  'lib/jquery'
+], function(
+  uiUtils,
+  eventDealer,
+  Overlay,
+  Drag
+) {
+
+  var findMaxZIndex = uiUtils.findMaxZIndex;
+  var eventDealer = eventDealer;
+  var Overlay = Overlay;
+  var Drag = Drag;
 
   // 对话框
   var cssTpl = [
@@ -248,7 +260,10 @@
     arguments.callee.prototype._init.call(this);
   };
 
-  window.Dialog = Dialog;
-  window.Confirm = Confirm;
-  window.Alert = Alert;
-})();
+  return {
+    Dialog: Dialog,
+    Confirm: Confirm,
+    Alert: Alert
+  };
+  
+});

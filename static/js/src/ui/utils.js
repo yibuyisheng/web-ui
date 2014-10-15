@@ -1,7 +1,11 @@
 // dependence: jQuery
-(function(global) {
 
-  var utils = {
+define([
+  'lib/jquery'
+], function(
+) {
+
+  return {
     findMaxZIndex: function($container) {
       var children = $container.children();
       if (!children.length) return null;
@@ -28,6 +32,4 @@
     }
   };
 
-  global.WEB_UI.ui = {};
-  global.uiUtils = global.WEB_UI.ui.utils = utils;
-})(window);
+});

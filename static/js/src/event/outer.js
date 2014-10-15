@@ -1,11 +1,10 @@
 // dependence: jQuery
-(function(fn, $) {
-  if (define instanceof Function && define.amd) {
-    define(['jquery'], fn);
-  } else {
-    fn();
-  }
-})(function() {
+
+define([
+  'lib/jquery'
+], function(
+) {
+
   // 事件处理对象
   var eventCache = {};
 
@@ -105,4 +104,5 @@
   };
 
   return $;
-}, jQuery);
+
+});

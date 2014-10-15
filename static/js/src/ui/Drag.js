@@ -1,11 +1,13 @@
 // dependence : jQuery
-(function() {
-  /**
-   * 拖动
-   * @param {jquery object} $box 需要移动的元素
-   * @param {jquery object} $target 鼠标操作的元素
-   */
-  var Drag = function($box, $target) {
+
+/**
+ * 拖动
+ * @param {jquery object} $box 需要移动的元素
+ * @param {jquery object} $target 鼠标操作的元素
+ */
+define(['lib/jquery'], function() {
+
+  return function($box, $target) {
     this._$box = $box;
     this._$target = $target;
 
@@ -53,6 +55,5 @@
 
     this._init();
   };
-
-  window.Drag = Drag;
-})();
+  
+});

@@ -1,10 +1,18 @@
 // dependence : jQuery, event/eventDealer.js, ui/utils.js[findMaxZIndex]
-(function() {
-  var eventDealer = window.eventDealer;
-  var findMaxZIndex = window.uiUtils.findMaxZIndex;
 
-  // 遮罩层
-  var Overlay = function(options) {
+define([
+  'src/event/eventDealer',
+  'src/ui/utils',
+  'lib/jquery'
+], function(
+  eventDealer,
+  uiUtils
+) {
+
+  var eventDealer = eventDealer;
+  var findMaxZIndex = uiUtils.findMaxZIndex;
+
+  return function(options) {
     if (!arguments.callee.prototype._init) {
       $.extend(arguments.callee.prototype, eventDealer, {
         _init: function() {
@@ -50,5 +58,4 @@
     this._init();
   };
 
-  window.Overlay = Overlay;
-})();
+});
