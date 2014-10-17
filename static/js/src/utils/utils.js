@@ -1,6 +1,10 @@
 define(function() {
   var toString = Object.prototype.toString;
 
+  var isObject = function() {
+    return toString.call(obj) === '[object Object]';
+  };
+
   var isFunction = function(obj) {
     return toString.call(obj) === '[object Function]';
   };
@@ -9,12 +13,58 @@ define(function() {
     return toString.call(obj) === '[object Array]';
   };
 
-  // TODO: 实现extend方法
+  var reduce = function(arr, callback, initialValue) {
+    if (!isArray(arr)) return;
+
+    var reduce = Array.prototype.reduce || function(callback, initialValue) {
+      if (!isFunction(callback)) return;
+
+      var arr = initialValue ? Array.prototype.concat.call(this, initialValue) : this;
+      if (arr.length < 2) return initialValue;
+
+      var previousValue = arr[0];
+      for (var i = 1, len = arr.length; i < len; i += 1) {
+        previousValue = callback(previousValue, this[i], i, this);
+      }
+      return previousValue;
+    };
+    reduce.call(arr, callback, initialValue);
+  };
+
+  // 实现extend方法
   var extend = function() {
     var args = arguments;
     if (!args.length) return;
+    if (!args.length === 1) return args[0];
 
-    
+    var isValueType = function(obj) {
+      return typeof obj !== 'object'             // 不是对象类型
+        || typeof obj === 'undefined'       
+        || obj === null;
+    };
+    if (isValueType(args[0])) return args[0];
+
+    var merge = function(obj1, obj2) {
+      if (isValueType(obj2)) return obj1;
+
+      for (var k in obj2) {
+        if (isValueType(obj1[k])) {
+          obj1[k] = obj2[k];
+        } 
+        // 是对象类型
+        else {
+          obj1[k] = {};
+          merge(obj1[k], obj2[k]);
+        }
+      }
+      return obj1;
+    };
+
+    for (var i = 1, il = args.length; i < il; i += 1) {
+      args[0] = merge(args[0], args[i]);
+    }
+
+    return args[0];
   };
   
   return {
@@ -35,23 +85,7 @@ define(function() {
       };
       bind.apply(fn, Array.prototype.slice.call(arguments, 1));
     },
-    reduce: function(arr, callback, initialValue) {
-      if (!isArray(arr)) return;
-
-      var reduce = Array.prototype.reduce || function(callback, initialValue) {
-        if (!isFunction(callback)) return;
-
-        var arr = initialValue ? Array.prototype.concat.call(this, initialValue) : this;
-        if (arr.length < 2) return initialValue;
-
-        var previousValue = arr[0];
-        for (var i = 1, len = arr.length; i < len; i += 1) {
-          previousValue = callback(previousValue, this[i], i, this);
-        }
-        return previousValue;
-      };
-      reduce.call(arr, callback, initialValue);
-    },
+    reduce: reduce,
     map: function(arr, fn, thisArg) {
       if (!isArray(arr) || !isFunction(fn)) return arr;
 
