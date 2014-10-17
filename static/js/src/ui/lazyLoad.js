@@ -34,23 +34,44 @@ define([
     } 
     return $img.data('lazy-show') === 'done';
   };
-  var lazyLoad = function(opts) {
-    var opts = WEB_UI.extend({
+
+  var lazyload = function(opts) {
+    var opts = $.extend({
       selector: 'img[lazy]',
-      srcAttr: 'lazy-src'
+      srcAttr: 'data-original',
+      container: window,
+      skipInvisible: true
     }, opts);
 
-    var $lazyElems = $(opts.selector);
+    var $lazyElems = $(opts.selector), 
+      $container = $(opts.container);
 
-    $(window).on('scroll', function() {
+    var checkTimer;
+
+    var update = function() {
       var isAllShow = true;
-      $lazyLoad.each(function() {
+      $lazyElems.each(function() {
         if (!checkImg($(this), opts.srcAttr) && isAllShow) isAllShow = false;
       });
+
       if (isAllShow) {
-        $(window).off('scroll', arguments.callee);
+        if (opts.skipInvisible) {
+          $container.off('scroll', update);
+          $(window).off('resize', update);
+        } else {
+          clearInterval(checkTimer);
+        }
       }
-    });
+    };
+
+    if (opts.skipInvisible) {
+      $container.on('scroll', update);
+      $(window).on('resize', update);
+    } else {
+      checkTimer = setInterval(update, 100);
+    }
   };
+
+  return lazyload;
 
 });

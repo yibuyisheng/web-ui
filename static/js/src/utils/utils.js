@@ -11,7 +11,10 @@ define(function() {
 
   // TODO: 实现extend方法
   var extend = function() {
+    var args = arguments;
+    if (!args.length) return;
 
+    
   };
   
   return {
