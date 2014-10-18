@@ -1,16 +1,20 @@
 define(function() {
   var toString = Object.prototype.toString;
 
-  var isObject = function() {
-    return toString.call(obj) === '[object Object]';
+  var getClassName = function(obj) {
+    return toString.call(obj).slice(8, -1);
+  };
+
+  var isObject = function(obj) {
+    return getClassName(obj) === 'Object';
   };
 
   var isFunction = function(obj) {
-    return toString.call(obj) === '[object Function]';
+    return getClassName(obj) === 'Function';
   };
 
   var isArray = function(obj) {
-    return toString.call(obj) === '[object Array]';
+    return getClassName(obj) === 'Array';
   };
 
   var reduce = function(arr, callback, initialValue) {
