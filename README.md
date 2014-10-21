@@ -1,15 +1,13 @@
-### 使用方法：
-  1、引入jquery；<br />
-  2、引入需要使用的ui组件的js（比如dialog.js）；
-### 文档：
-  每个ui类中带下划线的都是私有的，没有下划线的都可以在外部直接调用。<br />
-  Dialog：<br />
-    show：显示对话框；<br />
-    hide：隐藏对话框；<br />
-    destroy：将对话框及其相关的东西从文档中移除；
-  
-  Confirm：选择对话框<br />
-  Alert：确定对话框，分三种：成功、警告、错误<br />
-  <br />
-  test.html中包含了demo
-    
+目前包含内容：<br>
+1、event机制；<br>
+2、寻找dom树中显示在最上层的元素；<br>
+3、一些传统或者说有用的方法：<br>
+  a、类型判断，isObject、isFunction等等；<br>
+  b、继承，extend；<br>
+  c、EcmaScript 5关于Array的一些函数：forEach、map、reduce等等；<br>
+  d、寻找dom树中多个node的共同祖先node；<br>
+4、比较常用的out click事件；<br>
+5、拖动；<br>
+6、遮罩层；<br>
+7、图片延迟加载；<br>
+8、requirejs简单粗暴的实现；<br>
