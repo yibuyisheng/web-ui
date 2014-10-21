@@ -5,7 +5,7 @@
  * @param {jquery object} $box 需要移动的元素
  * @param {jquery object} $target 鼠标操作的元素
  */
-define(['lib/jquery'], function() {
+define(['src/event/timer', 'lib/jquery'], function(timer) {
 
   return function($box, $target) {
     this._$box = $box;
@@ -32,9 +32,11 @@ define(['lib/jquery'], function() {
             var xDistance = event.pageX - _this._prePageX;
             var yDistance = event.pageY - _this._prePageY;
 
-            _this._$box.css({
-              left: parseFloat(_this._$box.css('left')) + xDistance, 
-              top: parseFloat(_this._$box.css('top')) + yDistance
+            timer.once(function() {
+              _this._$box.css({
+                left: parseFloat(_this._$box.css('left')) + xDistance, 
+                top: parseFloat(_this._$box.css('top')) + yDistance
+              });
             });
 
             _this._prePageX = event.pageX;

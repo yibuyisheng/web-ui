@@ -107,7 +107,7 @@ define(function() {
     filter: function(arr, fn, thisArg) {
       if (!isArray(arr) || !isFunction(fn)) return arr;
 
-      var map = Array.prototype.filter || function(fn) {
+      var filter = Array.prototype.filter || function(fn) {
         var newArr = [];
         for (var i in this) {
           var ret = false;
