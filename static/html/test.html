@@ -25,7 +25,7 @@
   <div class="outer-test1"></div>
 
   <script type="text/javascript">
-  require(['src/ui/Dialog', 'src/event/outer', 'lib/jquery'], function(dialog, $) {
+  require(['src/ui/Dialog', 'src/event/outer', 'lib/jquery'], function(dialog, outer) {
     $('a').eq(0).on('click', function () {
       new dialog.Dialog({overlayVisible: false}).fadeIn('slow');
     });
@@ -50,9 +50,12 @@
     var cb = function() {
       console.log(this);
     };
-    $('.outer-test').onOuter(cb);
-    $('.outer-test1').onOuter(cb);
-    $('.outer-test2').onOuter(cb);
+
+    outer.on($('.outer-test')[0], cb);
+    outer.off($('.outer-test')[0], cb);
+    // $('.outer-test').onOuter(cb);
+    // $('.outer-test1').onOuter(cb);
+    // $('.outer-test2').onOuter(cb);
     // $('.outer-test').offOuter(cb);
   });
   </script>

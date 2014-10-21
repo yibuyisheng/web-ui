@@ -4,6 +4,9 @@ define(['src/utils/utils'], function(utils) {
   // 外部注册进来的回调函数
   var callbacks = [];
 
+  var timerFunction = window.requestAnimationFrame ? window.requestAnimationFrame : function() {
+    return function(fn) { window.setTimeout(fn, 50) };
+  };
   var timerCallback = function() {    
     callbacks = utils.filter(callbacks, function(val, index) {
       var now = +(new Date());
@@ -22,11 +25,7 @@ define(['src/utils/utils'], function(utils) {
       return val !== null;
     });
 
-    if (window.requestAnimationFrame) {
-      window.requestAnimationFrame(timerCallback);
-    } else {
-      window.setTimeout(timerCallback, 50);
-    }
+    timerFunction(timerCallback);
   };
   timerCallback();
 

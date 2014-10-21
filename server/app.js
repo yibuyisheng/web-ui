@@ -8,11 +8,18 @@ var readFile = function(path) {
     fs.readFile(path, fn);
   };
 };
+
+var delay = function() {
+  return function(fn) {
+    setTimeout(fn, 1000);
+  };
+};
 app.use(function *(){
   var path = __dirname.replace(/\/server$/, '') + this.request.url;
 
   try {
     this.body = yield readFile(path);
+    yield delay();
     if (/(\.html)|(\.htm)$/i.test(path)) {
       this.type = 'text/html; charset=utf-8';
     } else if (/\.js$/i.test(path)) {

@@ -93,11 +93,10 @@ define(function() {
     map: function(arr, fn, thisArg) {
       if (!isArray(arr) || !isFunction(fn)) return arr;
 
-      var map = Array.prototype.map || function(fn) {
+      var map = Array.prototype.map || function(fn, thisArg) {
         var newArr = [];
         for (var i in this) {
-          var ret = thisArg ? fn.call(thisArg, this, this[i], i, this) : fn(this, this[i], i, this);
-          newArr.push(this[i]);
+          newArr.push(fn.call(thisArg, this, this[i], i, this));
         }
         return newArr;
       };
@@ -107,14 +106,10 @@ define(function() {
     filter: function(arr, fn, thisArg) {
       if (!isArray(arr) || !isFunction(fn)) return arr;
 
-      var filter = Array.prototype.filter || function(fn) {
+      var filter = Array.prototype.filter || function(fn, thisArg) {
         var newArr = [];
         for (var i in this) {
-          var ret = false;
-          if (thisArg) ret = fn.call(thisArg, this, this[i], i, this);
-          else ret = fn(this, this[i], i, this);
-
-          if (ret) newArr.push(this[i]);
+          if (fn.call(thisArg, this, this[i], i, this)) newArr.push(this[i]);
         }
         return newArr;
       };
@@ -124,14 +119,25 @@ define(function() {
     forEach: function(arr, fn, thisArg) {
       if (!isArray(arr) || !isFunction(fn)) return;
 
-      var forEach = Array.prototype.forEach || function() {
+      var forEach = Array.prototype.forEach || function(fn, thisArg) {
         for (var i in this) {
-          if (thisArg) fn.call(thisArg, this, this[i], i, this);
-          else fn(this, this[i], i, this);
+          fn.call(thisArg, this, this[i], i, this);
         }
       };
 
       forEach.call(arr, fn, thisArg);
+    },
+    some: function(arr, fn, thisArg) {
+      if (!isArray(arr) || !isFunction(fn)) return;
+
+      var some = Array.prototype.some || function(fn, thisArg) {
+        for (var i in arr) {
+          if (fn.call(thisArg, this, this[i], i, this)) return true;
+        }
+        return false;
+      };
+
+      return some.call(arr, fn, thisArg);
     },
     // 函数连续调用
     chain: function(obj, fn, args) {
