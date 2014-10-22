@@ -8,17 +8,35 @@ define([
 
   var outerCallbacks = [];
   // 判断node的祖先节点中是否有parentNodes种的某一个
-  var isIn = function(parentNodes, node) {
-    while (node !== document.body) {
-      for (var i = 0, il = parentNodes.length; i < il; i += 1) {
-        if (parentNodes[i] === node) return true;
+  function contains(parentNode, childNode) {
+    var fn = Node.prototype.contains || function(childNode) {
+      while (childNode) {
+        if (childNode === parentNode) return true;
+        childNode = childNode.parentNode;
       }
-      node = node.parentNode;
+    };
+    return fn.call(parentNode, childNode);
+  }
+  function isIn(parentNodes, node) {
+    for (var i = 0, il = parentNodes.length; i < il; i += 1) {
+      if (contains(parentNodes[i], node)) return true;
     }
     return false;
+  }
+
+  var addEvent = function(elem, eventName, callback) {
+    if (window.addEventListener) {
+      elem.addEventListener(eventName, callback, false);
+    } else if (window.attachEvent) {
+      elem.attachEvent('on' + eventName, callback);
+    } else {
+      elem['on' + eventName] = function() {
+        callback.call(elem, window.event);
+      };
+    }
   };
 
-  document.addEventListener('click', function(event) {
+  addEvent(document, 'click', function(event) {
     var newCallbacks = [];
     for (var i = 0, il = outerCallbacks.length; i < il; i += 1) {
       var outerCallback = outerCallbacks[i];
@@ -34,14 +52,14 @@ define([
     outerCallbacks = newCallbacks;
   });
 
-  var outer = function(elem, callback) {
+  function outer(elem, callback) {
     if (!utils.isFunction(callback)) return;
 
     outerCallbacks.push({
       nodes: (utils.isArray(elem) ? elem : [elem]),
       callback: callback
     });
-  };
+  }
 
   var outerOff = function(elem, callback) {
     if (!elem && !callback) return;

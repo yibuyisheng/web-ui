@@ -18,23 +18,19 @@ define([
       return this;
     },
     trigger: function(eventName, data) {
-      var _this = this;
       if (this._cbs && this._cbs[eventName]) {
-        utils.forEach(this._cbs[eventName], function(val) {
-          if (utils.isFunction(val)) val.call(_this, data);
-        });
+        this._cbs[eventName] = utils.filter(this._cbs[eventName], function(val) {
+          if (utils.isFunction(val)) val.call(this, data);
+          return val !== null;
+        }, this);
       }
       return this;
     },
     off: function(eventName, cb) {
       if (!utils.isFunction(cb)) return;
 
-      // 使用setTimeout，防止在trigger的时候前面的函数off掉后面的函数，造成回调遍历出错
-      var _this = this;
-      setTimeout(function() {
-        _this._cbs[eventName] = utils.filter(_this._cbs[eventName], function(val) {
-          return val !== cb;
-        });
+      this._cbs[eventName] = utils.map(this._cbs[eventName], function(val, index, arr) {
+        return val === cb ? null : val;
       });
     }
   };

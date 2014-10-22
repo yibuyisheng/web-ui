@@ -1,23 +1,23 @@
 define(function() {
   var toString = Object.prototype.toString;
 
-  var getClassName = function(obj) {
+  function getClassName(obj) {
     return toString.call(obj).slice(8, -1);
-  };
+  }
 
-  var isObject = function(obj) {
+  function isObject(obj) {
     return getClassName(obj) === 'Object';
-  };
+  }
 
-  var isFunction = function(obj) {
+  function isFunction(obj) {
     return getClassName(obj) === 'Function';
-  };
+  }
 
-  var isArray = function(obj) {
+  function isArray(obj) {
     return getClassName(obj) === 'Array';
-  };
+  }
 
-  var reduce = function(arr, callback, initialValue) {
+  function reduce(arr, callback, initialValue) {
     if (!isArray(arr)) return;
 
     var reduce = Array.prototype.reduce || function(callback, initialValue) {
@@ -33,22 +33,22 @@ define(function() {
       return previousValue;
     };
     reduce.call(arr, callback, initialValue);
-  };
+  }
 
   // 实现extend方法
-  var extend = function() {
+  function extend() {
     var args = arguments;
     if (!args.length) return;
     if (!args.length === 1) return args[0];
 
-    var isValueType = function(obj) {
+    function isValueType(obj) {
       return typeof obj !== 'object'             // 不是对象类型
         || typeof obj === 'undefined'       
         || obj === null;
-    };
+    }
     if (isValueType(args[0])) return args[0];
 
-    var merge = function(obj1, obj2) {
+    function merge(obj1, obj2) {
       if (isValueType(obj2)) return obj1;
 
       for (var k in obj2) {
@@ -62,14 +62,14 @@ define(function() {
         }
       }
       return obj1;
-    };
+    }
 
     for (var i = 1, il = args.length; i < il; i += 1) {
       args[0] = merge(args[0], args[i]);
     }
 
     return args[0];
-  };
+  }
   
   return {
     isFunction: isFunction,
