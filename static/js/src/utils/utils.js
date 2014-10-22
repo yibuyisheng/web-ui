@@ -71,79 +71,91 @@ define(function() {
     return args[0];
   }
   
+  function bind(fn) {
+    if (!isFunction(fn)) return;
+
+    var bind = Function.prototype.bind || function() {
+      var args = arguments;
+      var obj = args.length > 0 ? args[0] : undefined;
+      var _this = this;
+      return function() {
+        var totalArgs = Array.prototype.concat.apply(Array.prototype.slice.call(args, 1), arguments);
+        return _this.apply(obj, totalArgs);
+      };
+    };
+    bind.apply(fn, Array.prototype.slice.call(arguments, 1));
+  }
+
+  function map(arr, fn, thisArg) {
+    if (!isArray(arr) || !isFunction(fn)) return arr;
+
+    var map = Array.prototype.map || function(fn, thisArg) {
+      var newArr = [];
+      for (var i in this) {
+        newArr.push(fn.call(thisArg, this, this[i], i, this));
+      }
+      return newArr;
+    };
+
+    return map.call(arr, fn, thisArg);
+  }
+
+  function filter(arr, fn, thisArg) {
+    if (!isArray(arr) || !isFunction(fn)) return arr;
+
+    var filter = Array.prototype.filter || function(fn, thisArg) {
+      var newArr = [];
+      for (var i in this) {
+        if (fn.call(thisArg, this, this[i], i, this)) newArr.push(this[i]);
+      }
+      return newArr;
+    };
+
+    return filter.call(arr, fn, thisArg);
+  }
+
+  function forEach(arr, fn, thisArg) {
+    if (!isArray(arr) || !isFunction(fn)) return;
+
+    var forEach = Array.prototype.forEach || function(fn, thisArg) {
+      for (var i in this) {
+        fn.call(thisArg, this, this[i], i, this);
+      }
+    };
+
+    forEach.call(arr, fn, thisArg);
+  }
+
+  function some(arr, fn, thisArg) {
+    if (!isArray(arr) || !isFunction(fn)) return;
+
+    var some = Array.prototype.some || function(fn, thisArg) {
+      for (var i in arr) {
+        if (fn.call(thisArg, this, this[i], i, this)) return true;
+      }
+      return false;
+    };
+
+    return some.call(arr, fn, thisArg);
+  }
+
+  // 函数连续调用
+  function chain(obj, fn, args) {
+    var ret = fn.apply(obj, args);
+    return typeof ret !== 'undefined' ? ret : obj;
+  }
+
   return {
     isFunction: isFunction,
     isArray: isArray,
     extend: extend,
-    bind: function(fn) {
-      if (!isFunction(fn)) return;
-
-      var bind = Function.prototype.bind || function() {
-        var args = arguments;
-        var obj = args.length > 0 ? args[0] : undefined;
-        var _this = this;
-        return function() {
-          var totalArgs = Array.prototype.concat.apply(Array.prototype.slice.call(args, 1), arguments);
-          return _this.apply(obj, totalArgs);
-        };
-      };
-      bind.apply(fn, Array.prototype.slice.call(arguments, 1));
-    },
+    bind: bind,
     reduce: reduce,
-    map: function(arr, fn, thisArg) {
-      if (!isArray(arr) || !isFunction(fn)) return arr;
-
-      var map = Array.prototype.map || function(fn, thisArg) {
-        var newArr = [];
-        for (var i in this) {
-          newArr.push(fn.call(thisArg, this, this[i], i, this));
-        }
-        return newArr;
-      };
-
-      return map.call(arr, fn, thisArg);
-    },
-    filter: function(arr, fn, thisArg) {
-      if (!isArray(arr) || !isFunction(fn)) return arr;
-
-      var filter = Array.prototype.filter || function(fn, thisArg) {
-        var newArr = [];
-        for (var i in this) {
-          if (fn.call(thisArg, this, this[i], i, this)) newArr.push(this[i]);
-        }
-        return newArr;
-      };
-
-      return filter.call(arr, fn, thisArg);
-    },
-    forEach: function(arr, fn, thisArg) {
-      if (!isArray(arr) || !isFunction(fn)) return;
-
-      var forEach = Array.prototype.forEach || function(fn, thisArg) {
-        for (var i in this) {
-          fn.call(thisArg, this, this[i], i, this);
-        }
-      };
-
-      forEach.call(arr, fn, thisArg);
-    },
-    some: function(arr, fn, thisArg) {
-      if (!isArray(arr) || !isFunction(fn)) return;
-
-      var some = Array.prototype.some || function(fn, thisArg) {
-        for (var i in arr) {
-          if (fn.call(thisArg, this, this[i], i, this)) return true;
-        }
-        return false;
-      };
-
-      return some.call(arr, fn, thisArg);
-    },
-    // 函数连续调用
-    chain: function(obj, fn, args) {
-      var ret = fn.apply(obj, args);
-      return typeof ret !== 'undefined' ? ret : obj;
-    }
+    map: map,
+    filter: filter,
+    forEach: forEach,
+    some: some,
+    chain: chain
   };
 
 });
