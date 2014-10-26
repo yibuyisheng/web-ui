@@ -18,7 +18,7 @@ define([
         if ($.isNumeric(zIndex)) {
           if (!ret || ret < zIndex) ret = zIndex;
         } else {
-          var result = arguments.callee.call(null, $(this));
+          var result = arguments.callee.call(this, $(this));
           if (!ret || ($.isNumeric(result) && ret < result)) ret = result;
         }
       });

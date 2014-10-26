@@ -85,6 +85,14 @@
     return args[0];
   };
 
+  // 检测一棵树当中是否存在循环，即a节点的某个子孙节点是否也在a节点的祖先节点中或者说就是a节点
+  var checkDepencyCircle = function(currentNode, tree) {
+    var cursorNode = currentNode.parent;
+    while (cursorNode) {
+      if (cursorNode === currentNode) return true;
+    }
+    return false;
+  };
 
   // 获取当前脚本的完整url
   var getCurrentScriptUrl = function() {
@@ -130,20 +138,32 @@
     for (var i = 0, il = dependencies.length; i< il; i += 1) {
       var url = buildScriptUrl(dependencies[i]);
       dependencies[i] = url;
+
+      // 初始化缓存结构
+      require._cache[url] = {
+        state: 'ready',                    // 准备好加载
+        parent: currentScriptUrl
+      };
+
+      // 检查一下是否存在循环依赖
+      var hasCircleDependency = false;
+      var cursorNode = require._cache[url].parent;
+      while (cursorNode) {
+        if (cursorNode === url) hasCircleDependency = true;
+        cursorNode = require._cache[cursorNode].parent;
+      }
+      if (hasCircleDependency) throw new Error('存在循环依赖');
+
       (function(url) {
         // 避免重复加载
-        if (require._cache[url]) return;
+        if (require._cache[url].state !== 'ready') return;
 
         // 加载未加载的js
-        require._cache[url] = {
-          state: 'loading'
-        };
+        require._cache[url].state = 'loading';
         loadScript(url, function() {
           // 这个js模块没有调用define方法
-          if (!require._cache[url] || require._cache[url].state === 'loading') {
-            require._cache[url] = {
-              state: 'loaded'
-            };  
+          if (require._cache[url].state === 'loading') {
+            require._cache[url].state = state: 'loaded';  
           }
 
           if (dependenciesTreeReady()) {
@@ -153,12 +173,12 @@
       })(url);
     }
 
-    require._cache[currentScriptUrl] = {
+    extend(require._cache[currentScriptUrl], {
       state: 'loaded',
       exports: null,
       dependencies: dependencies,
       fn: fn
-    };
+    });
   };
 
   // 检测整个依赖树是否构建完毕
