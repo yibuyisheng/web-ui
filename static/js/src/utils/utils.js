@@ -43,7 +43,7 @@ define(function() {
 
     function isValueType(obj) {
       return typeof obj !== 'object'             // 不是对象类型
-        || typeof obj === 'undefined'       
+        || typeof obj === 'undefined'
         || obj === null;
     }
     if (isValueType(args[0])) return args[0];
@@ -69,21 +69,6 @@ define(function() {
     }
 
     return args[0];
-  }
-  
-  function bind(fn) {
-    if (!isFunction(fn)) return;
-
-    var bind = Function.prototype.bind || function() {
-      var args = arguments;
-      var obj = args.length > 0 ? args[0] : undefined;
-      var _this = this;
-      return function() {
-        var totalArgs = Array.prototype.concat.apply(Array.prototype.slice.call(args, 1), arguments);
-        return _this.apply(obj, totalArgs);
-      };
-    };
-    bind.apply(fn, Array.prototype.slice.call(arguments, 1));
   }
 
   function map(arr, fn, thisArg) {
@@ -145,6 +130,39 @@ define(function() {
     return typeof ret !== 'undefined' ? ret : obj;
   }
 
+  function bind(fn, thisArg) {
+    if (!isFunction(fn)) return;
+
+    var bind = Function.prototype.bind || function() {
+      var args = arguments;
+      var obj = args.length > 0 ? args[0] : undefined;
+      var _this = this;
+      return function() {
+        var totalArgs = Array.prototype.concat.apply(Array.prototype.slice.call(args, 1), arguments);
+        return _this.apply(obj, totalArgs);
+      };
+    };
+    return bind.apply(fn, [thisArg].concat(Array.prototype.slice.call(arguments, 1)));
+  }
+
+  // 时间格式化
+  function dateGetter(fn, dt) {
+    return fn.call(dt);
+  }
+  var strMap = {
+    yyyy: bind(dateGetter, Date.prototype.getFullYear),
+    MM: function(dt) { return dateGetter(Date.prototype.getMonth, dt) + 1; },
+    dd: bind(dateGetter, Date.prototype.getDate),
+    HH: bind(dateGetter, Date.prototype.getHours),
+    mm: bind(dateGetter, Date.prototype.getMinutes),
+    ss: bind(dateGetter, Date.prototype.getSeconds)
+  };
+  function dateFormat(dt, formatStr) {
+    return formatStr.replace(/(y{4})|(M{2})|(d{2})|(H{2})|(m{2})|(s{2})/g, function(match) {
+      return strMap[match](dt);
+    });
+  }
+
   return {
     isFunction: isFunction,
     isArray: isArray,
@@ -155,7 +173,8 @@ define(function() {
     filter: filter,
     forEach: forEach,
     some: some,
-    chain: chain
+    chain: chain,
+    dateFormat: dateFormat
   };
 
 });
