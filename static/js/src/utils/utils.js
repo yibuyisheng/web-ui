@@ -158,7 +158,7 @@ define(function() {
     ss: bind(dateGetter, Date.prototype.getSeconds)
   };
   function dateFormat(dt, formatStr) {
-    return formatStr.replace(/(y{4})|(M{2})|(d{2})|(H{2})|(m{2})|(s{2})/g, function(match) {
+    return formatStr.replace(/(y{4})|([M|d|H|m|s]{2})/g, function(match) {
       return strMap[match](dt);
     });
   }
