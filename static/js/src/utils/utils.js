@@ -35,7 +35,9 @@ define(function() {
     reduce.call(arr, callback, initialValue);
   }
 
-  // 实现extend方法
+  /**
+  * 深复制
+  */
   function extend() {
     var args = arguments;
     if (!args.length) return;
@@ -54,7 +56,7 @@ define(function() {
       for (var k in obj2) {
         if (isValueType(obj1[k])) {
           obj1[k] = obj2[k];
-        } 
+        }
         // 是对象类型
         else {
           obj1[k] = {};
@@ -163,6 +165,19 @@ define(function() {
     });
   }
 
+  /**
+  * 用指定的参数替换掉字符串'hello {0} {1}'中的{0}和{1}
+  *
+  * @param {string} str 待替换的字符串
+  * @return {string} 返回一个转换后的字符串
+  */
+  function format(str) {
+    var args = arguments;
+    return str.replace(/\{[0-9]+\}/g, function(match) {
+      return args[parseInt(match.slice(1, -1)) + 1];
+    });
+  }
+
   return {
     isFunction: isFunction,
     isArray: isArray,
@@ -174,7 +189,8 @@ define(function() {
     forEach: forEach,
     some: some,
     chain: chain,
-    dateFormat: dateFormat
+    dateFormat: dateFormat,
+    format: format
   };
 
 });
