@@ -75,6 +75,27 @@ function * rmdirGen(dir) {
     }
 }
 
+function * cpGen(srcPath, destPath) {
+    if (!destPath.replace(/\s/g, '')) throw new Error('the destination path is an empty string');
+
+    srcPath = path.resolve(srcPath);
+    destPath = path.resolve(destPath);
+
+    if (!(yield fs.exists.bind(fs, srcPath))[0]) throw new Error('the source file is not exists');
+
+    var readStream = fs.createReadStream(srcPath);
+    var writeStream = fs.createWriteStream(destPath);
+
+    readStream.pipe(writeStream);
+    var error = yield writeStream.on.bind(writeStream, 'error');
+    if (error && error[0]) throw error[0];
+    yield writeStream.on.bind(writeStream, 'finish');
+}
+
+
+exports.cp = function(srcPath, destPath, callback) {
+    executeGeneratorFn(cpGen.bind(null, srcPath, destPath), callback);
+};
 
 exports.mkdirs = function(dir, callback) {
     executeGeneratorFn(mkdirsGen.bind(null, dir), callback);
