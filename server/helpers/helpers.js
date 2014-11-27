@@ -119,7 +119,49 @@ function * cpdirGen(srcDir, destDir) {
     }
 }
 
-exports.cpdirGen = function(srcDir, destDir, callback) {
+function * mvGen(srcPath, destPath) {
+    if (!destPath.replace(/\s/g, '')) throw new Error('the destination path is an empty string');
+
+    srcPath = path.resolve(srcPath);
+    destPath = path.resolve(destPath);
+
+    if (!(yield fs.exists.bind(fs, srcPath))[0]) throw new Error('the source file is not exists');
+
+    // 判断目标目录是不是存在
+    var destDir = destPath.slice(0, destPath.lastIndexOf(path.sep));
+    if (!(yield fs.exists.bind(fs, destDir))) {
+        throw new Error('the destination directory is not exists');
+    }
+
+    // 创建目标文件
+    throwError(yield fs.writeFile(fs, destPath, ''));
+    // 判断是不是在同一个硬盘区域
+    var srcDevice = throwError(yield fs.stat.bind(fs, srcPath))[1].dev;
+    var destDevice = throwError(yield fs.stat.bind(fs, destPath))[2].dev;
+
+    // 在同一个硬盘区域
+    if (srcDevice === destDevice) {
+        throwError(yield fs.unlink.bind(fs, destPath));
+        throwError(yield fs.rename.bind(fs, srcPath, destPath));
+    }
+    // 在不同的硬盘区域
+    else {
+        throwError(yield executeGeneratorFn.bind(null, cpGen.bind(null, srcPath, destPath)));
+        throwError(yield fs.unlink.bind(null, srcPath));
+    }
+}
+
+// TODO
+function * mvdirGen(srcDir, destDir) {
+
+}
+
+
+exports.mv = function(srcPath, destPath, callback) {
+    executeGeneratorFn(mvGen.bind(null, srcPath, destPath), callback);
+};
+
+exports.cpdir = function(srcDir, destDir, callback) {
     executeGeneratorFn(cpdirGen.bind(null, srcDir, destDir), callback);
 };
 
