@@ -23,6 +23,11 @@ function executeGeneratorFn(genFn, callback) {
     next();
 }
 
+function throwError(result) {
+    if (result && result[0]) throw result[0];
+    return result;
+}
+
 function * mkdirsGen(dir) {
     if (dir.replace(/\s/g, '') === '') throw new Error('the directory is empty string');
 
@@ -37,8 +42,7 @@ function * mkdirsGen(dir) {
         var exists = yield fs.exists.bind(fs, dirPath);
         if (exists[0]) continue;
 
-        var result = yield fs.mkdir.bind(fs, dirPath);
-        if (result && result[0]) throw result[0];
+        throwError(yield fs.mkdir.bind(fs, dirPath));
     } while (sepIndex + 1);
 }
 
@@ -49,27 +53,23 @@ function * rmdirGen(dir) {
     while (stack.length) {
         var top = stack.pop();
 
-        var readdirResult = yield fs.readdir.bind(fs, top);
-        if (readdirResult && readdirResult[0]) throw readdirResult[0];
+        var readdirResult = throwError(yield fs.readdir.bind(fs, top));
         for (var i = 0, il = readdirResult[1].length; i < il; i += 1) {
             var fullPath = path.join(top, readdirResult[1][i]);
 
-            var statsResult = yield fs.stat.bind(fs, fullPath);
-            if (statsResult && statsResult[0]) throw statsResult[0];
+            var statsResult = throwError(yield fs.stat.bind(fs, fullPath));
 
             if (statsResult[1].isDirectory()) {
                 stack.push(fullPath);
                 dirs.push(fullPath);
             } else {
-                var unlinkResult = yield fs.unlink.bind(fs, fullPath);
-                if (unlinkResult && unlinkResult[0]) throw unlinkResult[0];
+                var unlinkResult = throwError(yield fs.unlink.bind(fs, fullPath));
             }
         }
     }
 
     for (var i = dirs.length - 1; i >= 0; i -= 1) {
-        var rmdirResult = yield fs.rmdir.bind(fs, dirs[i]);
-        if (rmdirResult && rmdirResult[0]) throw rmdirResult[0];
+        var rmdirResult = throwError(yield fs.rmdir.bind(fs, dirs[i]));
     }
 }
 
@@ -90,8 +90,7 @@ function * cpGen(srcPath, destPath) {
         writeStream.on('error', callback);
         writeStream.on('finish', callback);
     }
-    var error = yield end.bind(null);
-    if (error && error[0]) throw error[0];
+    throwError(yield end.bind(null));
 }
 
 function * cpdirGen(srcDir, destDir) {
@@ -106,28 +105,19 @@ function * cpdirGen(srcDir, destDir) {
     var stack = [srcDir];
     while (stack.length) {
         var top = stack.pop();
-        var readdirResult = yield fs.readdir.bind(fs, top);
-        if (readdirResult[0]) throw readdirResult[0];
+        var readdirResult = throwError(yield fs.readdir.bind(fs, top));
         for (var i = 0, il = readdirResult[1].length; i < il; i += 1) {
             var fullPath = path.join(top, readdirResult[1][i]);
-            var statResult = yield fs.stat.bind(fs, fullPath);
-            if (statResult[0]) throw statResult[0];
+            var statResult = throwError(yield fs.stat.bind(fs, fullPath));
             if (statResult[1].isDirectory()) {
-                var error = yield fs.mkdir.bind(fs, fullPath.replace(srcDir, destDir));
-                if (error && error[0]) throw error[0];
-
+                throwError(yield fs.mkdir.bind(fs, fullPath.replace(srcDir, destDir)));
                 stack.push(fullPath);
             } else {
-                var error = yield executeGeneratorFn.bind(null, cpGen.bind(null, fullPath, fullPath.replace(srcDir, destDir)));
-                if (error && error[0]) throw error[0];
+                throwError(yield executeGeneratorFn.bind(null, cpGen.bind(null, fullPath, fullPath.replace(srcDir, destDir))));
             }
         }
     }
 }
-
-executeGeneratorFn(cpdirGen.bind(null, '/Users/zhangli/web-ui', '/Users/zhangli/web-ui-test'), function() {
-    console.log(arguments);
-});
 
 exports.cpdirGen = function(srcDir, destDir, callback) {
     executeGeneratorFn(cpdirGen.bind(null, srcDir, destDir), callback);
