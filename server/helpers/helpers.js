@@ -6,23 +6,21 @@ function executeGeneratorFn(genFn, callback) {
 
     function execute(nextValue) {
         if (!nextValue.done) {
-            nextValue.value(function() {
-                try {
-                    execute(iterator.next(arguments));
-                } catch (e) {
-                    callback(e);
-                }
-            });
+            nextValue.value(next);
         } else {
             callback instanceof Function && callback();
         }
     }
 
-    try {
-        execute(iterator.next());
-    } catch (e) {
-        callback(e);
+    function next() {
+        try {
+            execute(iterator.next(arguments));
+        } catch (e) {
+            callback(e);
+        }
     }
+
+    next();
 }
 
 function * mkdirsGen(dir) {
@@ -127,9 +125,9 @@ function * cpdirGen(srcDir, destDir) {
     }
 }
 
-// executeGeneratorFn(cpdirGen.bind(null, '/Users/zhangli/web-ui', '/Users/zhangli/web-ui-test'), function() {
-//     console.log(arguments);
-// });
+executeGeneratorFn(cpdirGen.bind(null, '/Users/zhangli/web-ui', '/Users/zhangli/web-ui-test'), function() {
+    console.log(arguments);
+});
 
 exports.cpdirGen = function(srcDir, destDir, callback) {
     executeGeneratorFn(cpdirGen.bind(null, srcDir, destDir), callback);
