@@ -26,15 +26,15 @@ function executeGeneratorFn(genFn, callback) {
 }
 
 function * mkdirsGen(dir) {
-    if (dir.replace(/\s/g, '') === '') return;
+    if (dir.replace(/\s/g, '') === '') throw new Error('the directory is empty string');
 
-    dir = path.normalize(dir);
+    dir = path.resolve(dir);
 
     var sepIndex = -1;
     do {
         var sepIndex = dir.indexOf(path.sep, sepIndex + 1);
 
-        var dirPath = dir.slice(0, sepIndex === -1 ? dir.length : sepIndex);
+        var dirPath = dir.slice(0, sepIndex === -1 ? dir.length : (sepIndex + 1));
 
         var exists = yield fs.exists.bind(fs, dirPath);
         if (exists[0]) continue;
@@ -87,11 +87,53 @@ function * cpGen(srcPath, destPath) {
     var writeStream = fs.createWriteStream(destPath);
 
     readStream.pipe(writeStream);
-    var error = yield writeStream.on.bind(writeStream, 'error');
+
+    function end(callback) {
+        writeStream.on('error', callback);
+        writeStream.on('finish', callback);
+    }
+    var error = yield end.bind(null);
     if (error && error[0]) throw error[0];
-    yield writeStream.on.bind(writeStream, 'finish');
 }
 
+function * cpdirGen(srcDir, destDir) {
+    srcDir = path.resolve(srcDir);
+    destDir = path.resolve(destDir);
+
+    if (!(yield fs.exists.bind(fs, srcDir))[0]) throw new Error('the source directory is not exists');
+
+    // 创建目标目录
+    yield executeGeneratorFn.bind(null, mkdirsGen.bind(null, destDir));
+
+    var stack = [srcDir];
+    while (stack.length) {
+        var top = stack.pop();
+        var readdirResult = yield fs.readdir.bind(fs, top);
+        if (readdirResult[0]) throw readdirResult[0];
+        for (var i = 0, il = readdirResult[1].length; i < il; i += 1) {
+            var fullPath = path.join(top, readdirResult[1][i]);
+            var statResult = yield fs.stat.bind(fs, fullPath);
+            if (statResult[0]) throw statResult[0];
+            if (statResult[1].isDirectory()) {
+                var error = yield fs.mkdir.bind(fs, fullPath.replace(srcDir, destDir));
+                if (error && error[0]) throw error[0];
+
+                stack.push(fullPath);
+            } else {
+                var error = yield executeGeneratorFn.bind(null, cpGen.bind(null, fullPath, fullPath.replace(srcDir, destDir)));
+                if (error && error[0]) throw error[0];
+            }
+        }
+    }
+}
+
+// executeGeneratorFn(cpdirGen.bind(null, '/Users/zhangli/web-ui', '/Users/zhangli/web-ui-test'), function() {
+//     console.log(arguments);
+// });
+
+exports.cpdirGen = function(srcDir, destDir, callback) {
+    executeGeneratorFn(cpdirGen.bind(null, srcDir, destDir), callback);
+};
 
 exports.cp = function(srcPath, destPath, callback) {
     executeGeneratorFn(cpGen.bind(null, srcPath, destPath), callback);
