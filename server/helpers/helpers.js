@@ -151,28 +151,59 @@ function * mvGen(srcPath, destPath) {
     }
 }
 
-// TODO
 function * mvdirGen(srcDir, destDir) {
 
+    throwError(yield mkdirs.bind(null, destDir));
+
+    var dirs = []; // 等待删除的文件夹
+    var stack = [srcDir];
+    while (stack.length) {
+        var top = stack.pop();
+
+        var files = throwError(yield fs.readdir.bind(null, top))[1];
+        for (var i = 0, il = files.length; i < il; i += 1) {
+            var fullPath = path.join(top, files[i]);
+            var isDirectory = throwError(yield fs.stat.bind(fs, fullPath))[1].isDirectory();
+            if (isDirectory) {
+                throwError(yield fs.mkdir.bind(fs, fullPath.replace(srcDir, destDir)));
+                dirs.push(fullPath);
+            } else {
+                throwError(yield mv.bind(fs, fullPath, fullPath.replace(srcDir, destDir)));
+            }
+        }
+    }
+
+    for (var i = dirs.length - 1; i >= 0; i -= 1) {
+        throwError(yield fs.rmdir.bind(fs, dirs[i]));
+    }
+}
+
+function mvdir(srcDir, destDir, callback) {
+    executeGeneratorFn(mvdirGen.bind(null, srcDir, destDir), callback);
+}
+
+function mv(srcPath, destPath, callback) {
+    executeGeneratorFn(mvGen.bind(null, srcPath, destPath), callback);
+}
+function cpdir(srcDir, destDir, callback) {
+    executeGeneratorFn(cpdirGen.bind(null, srcDir, destDir), callback);
+}
+function cp(srcPath, destPath, callback) {
+    executeGeneratorFn(cpGen.bind(null, srcPath, destPath), callback);
+}
+function mkdirs(dir, callback) {
+    executeGeneratorFn(mkdirsGen.bind(null, dir), callback);
+}
+function rmdir(dir, callback) {
+    executeGeneratorFn(rmdirGen.bind(null, dir), callback);
 }
 
 
-exports.mv = function(srcPath, destPath, callback) {
-    executeGeneratorFn(mvGen.bind(null, srcPath, destPath), callback);
-};
-
-exports.cpdir = function(srcDir, destDir, callback) {
-    executeGeneratorFn(cpdirGen.bind(null, srcDir, destDir), callback);
-};
-
-exports.cp = function(srcPath, destPath, callback) {
-    executeGeneratorFn(cpGen.bind(null, srcPath, destPath), callback);
-};
-
-exports.mkdirs = function(dir, callback) {
-    executeGeneratorFn(mkdirsGen.bind(null, dir), callback);
-};
-
-exports.rmdir = function(dir, callback) {
-    executeGeneratorFn(rmdirGen.bind(null, dir), callback);
+module.exports = {
+    mv: mv,
+    cpdir: cpdir,
+    cp: cp,
+    mkdirs: mkdirs,
+    rmdir: rmdir,
+    mvdir: mvdir
 };
