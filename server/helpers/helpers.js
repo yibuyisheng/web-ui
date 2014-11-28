@@ -152,6 +152,12 @@ function * mvGen(srcPath, destPath) {
 }
 
 function * mvdirGen(srcDir, destDir) {
+    if (!destPath.replace(/\s/g, '')) throw new Error('the destination directory is an empty string');
+
+    srcPath = path.resolve(srcDir);
+    destPath = path.resolve(destDir);
+
+    if (!(yield fs.exists.bind(fs, srcPath))[0]) throw new Error('the source directory is not exists');
 
     throwError(yield mkdirs.bind(null, destDir));
 
