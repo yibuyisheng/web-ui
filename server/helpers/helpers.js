@@ -134,10 +134,10 @@ function * mvGen(srcPath, destPath) {
     }
 
     // 创建目标文件
-    throwError(yield fs.writeFile(fs, destPath, ''));
+    throwError(yield fs.writeFile.bind(fs, destPath, ''));
     // 判断是不是在同一个硬盘区域
     var srcDevice = throwError(yield fs.stat.bind(fs, srcPath))[1].dev;
-    var destDevice = throwError(yield fs.stat.bind(fs, destPath))[2].dev;
+    var destDevice = throwError(yield fs.stat.bind(fs, destPath))[1].dev;
 
     // 在同一个硬盘区域
     if (srcDevice === destDevice) {
