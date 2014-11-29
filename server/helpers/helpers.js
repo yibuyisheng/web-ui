@@ -152,7 +152,7 @@ function * mvGen(srcPath, destPath) {
 }
 
 function * mvdirGen(srcDir, destDir) {
-    if (!destPath.replace(/\s/g, '')) throw new Error('the destination directory is an empty string');
+    if (!destDir.replace(/\s/g, '')) throw new Error('the destination directory is an empty string');
 
     srcPath = path.resolve(srcDir);
     destPath = path.resolve(destDir);
@@ -161,7 +161,7 @@ function * mvdirGen(srcDir, destDir) {
 
     throwError(yield mkdirs.bind(null, destDir));
 
-    var dirs = []; // 等待删除的文件夹
+    var dirs = [srcDir]; // 等待删除的文件夹
     var stack = [srcDir];
     while (stack.length) {
         var top = stack.pop();
@@ -172,6 +172,7 @@ function * mvdirGen(srcDir, destDir) {
             var isDirectory = throwError(yield fs.stat.bind(fs, fullPath))[1].isDirectory();
             if (isDirectory) {
                 throwError(yield fs.mkdir.bind(fs, fullPath.replace(srcDir, destDir)));
+                stack.push(fullPath);
                 dirs.push(fullPath);
             } else {
                 throwError(yield mv.bind(fs, fullPath, fullPath.replace(srcDir, destDir)));

@@ -1,0 +1,25 @@
+{
+  "name": "web-ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/app.js",
+  "dependencies": {
+    "koa": "^0.12.2"
+  },
+  "devDependencies": {
+    "mocha": "^2.0.1"
+  },
+  "scripts": {
+    "test": "mocha --harmony test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yibuyisheng/web-ui.git"
+  },
+  "author": "yibuyisheng",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yibuyisheng/web-ui/issues"
+  },
+  "homepage": "https://github.com/yibuyisheng/web-ui"
+}
