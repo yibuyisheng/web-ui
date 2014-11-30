@@ -25,7 +25,7 @@ function executeGeneratorFn(genFn, callback) {
 
 function throwError(result) {
     if (result && result[0]) throw result[0];
-    return result;
+    return result && result.length === 2 ? result[1] : null;
 }
 
 function * mkdirsGen(dir) {
@@ -53,23 +53,23 @@ function * rmdirGen(dir) {
     while (stack.length) {
         var top = stack.pop();
 
-        var readdirResult = throwError(yield fs.readdir.bind(fs, top));
-        for (var i = 0, il = readdirResult[1].length; i < il; i += 1) {
-            var fullPath = path.join(top, readdirResult[1][i]);
+        var files = throwError(yield fs.readdir.bind(fs, top));
+        for (var i = 0, il = files.length; i < il; i += 1) {
+            var fullPath = path.join(top, files[i]);
 
-            var statsResult = throwError(yield fs.stat.bind(fs, fullPath));
+            var stats = throwError(yield fs.stat.bind(fs, fullPath));
 
-            if (statsResult[1].isDirectory()) {
+            if (stats.isDirectory()) {
                 stack.push(fullPath);
                 dirs.push(fullPath);
             } else {
-                var unlinkResult = throwError(yield fs.unlink.bind(fs, fullPath));
+                throwError(yield fs.unlink.bind(fs, fullPath));
             }
         }
     }
 
     for (var i = dirs.length - 1; i >= 0; i -= 1) {
-        var rmdirResult = throwError(yield fs.rmdir.bind(fs, dirs[i]));
+        throwError(yield fs.rmdir.bind(fs, dirs[i]));
     }
 }
 
@@ -105,11 +105,11 @@ function * cpdirGen(srcDir, destDir) {
     var stack = [srcDir];
     while (stack.length) {
         var top = stack.pop();
-        var readdirResult = throwError(yield fs.readdir.bind(fs, top));
-        for (var i = 0, il = readdirResult[1].length; i < il; i += 1) {
-            var fullPath = path.join(top, readdirResult[1][i]);
-            var statResult = throwError(yield fs.stat.bind(fs, fullPath));
-            if (statResult[1].isDirectory()) {
+        var files = throwError(yield fs.readdir.bind(fs, top));
+        for (var i = 0, il = files.length; i < il; i += 1) {
+            var fullPath = path.join(top, files[i]);
+            var stats = throwError(yield fs.stat.bind(fs, fullPath));
+            if (stats.isDirectory()) {
                 throwError(yield fs.mkdir.bind(fs, fullPath.replace(srcDir, destDir)));
                 stack.push(fullPath);
             } else {
@@ -136,8 +136,8 @@ function * mvGen(srcPath, destPath) {
     // 创建目标文件
     throwError(yield fs.writeFile.bind(fs, destPath, ''));
     // 判断是不是在同一个硬盘区域
-    var srcDevice = throwError(yield fs.stat.bind(fs, srcPath))[1].dev;
-    var destDevice = throwError(yield fs.stat.bind(fs, destPath))[1].dev;
+    var srcDevice = throwError(yield fs.stat.bind(fs, srcPath)).dev;
+    var destDevice = throwError(yield fs.stat.bind(fs, destPath)).dev;
 
     // 在同一个硬盘区域
     if (srcDevice === destDevice) {
@@ -166,10 +166,10 @@ function * mvdirGen(srcDir, destDir) {
     while (stack.length) {
         var top = stack.pop();
 
-        var files = throwError(yield fs.readdir.bind(null, top))[1];
+        var files = throwError(yield fs.readdir.bind(null, top));
         for (var i = 0, il = files.length; i < il; i += 1) {
             var fullPath = path.join(top, files[i]);
-            var isDirectory = throwError(yield fs.stat.bind(fs, fullPath))[1].isDirectory();
+            var isDirectory = throwError(yield fs.stat.bind(fs, fullPath)).isDirectory();
             if (isDirectory) {
                 throwError(yield fs.mkdir.bind(fs, fullPath.replace(srcDir, destDir)));
                 stack.push(fullPath);
