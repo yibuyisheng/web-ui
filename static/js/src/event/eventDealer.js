@@ -1,4 +1,12 @@
 // dependence: utils/utils.js
+
+/**
+ * TODO: event pipe / event stream
+ * 事件管道/事件流：Model a + Model b -> Model e, Model c + Model d -> Model f, Model e + Model f -> UI
+ */
+
+
+
 define([
   'src/utils/utils'
 ], function(
