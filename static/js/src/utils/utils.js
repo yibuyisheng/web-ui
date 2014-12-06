@@ -144,7 +144,7 @@ define(function() {
         return _this.apply(obj, totalArgs);
       };
     };
-    return bind.apply(fn, [thisArg].concat(Array.prototype.slice.call(arguments, 1)));
+    return bind.apply(fn, [thisArg].concat(Array.prototype.slice.call(arguments, 2)));
   }
 
   // 时间格式化
