@@ -65,6 +65,10 @@ alert(a);
     // $('.outer-test2').onOuter(cb);
     // $('.outer-test').offOuter(cb);
   });
+
+  require(['src/utils/utils'], function(utils) {
+    window.utils = utils;
+  });
   </script>
 </body>
 </html>

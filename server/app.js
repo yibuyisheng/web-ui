@@ -19,7 +19,6 @@ app.use(function *(){
 
   try {
     this.body = yield readFile(path);
-    yield delay();
     if (/(\.html)|(\.htm)$/i.test(path)) {
       this.type = 'text/html; charset=utf-8';
     } else if (/\.js$/i.test(path)) {
@@ -30,4 +29,4 @@ app.use(function *(){
   }
 });
 
-app.listen(3000);
+app.listen(4000);
