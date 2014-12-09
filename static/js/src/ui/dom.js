@@ -42,4 +42,30 @@ define(function() {
             styleElement.appendChild(doc.createTextNode(cssCode))
         }
     }
+
+    /**
+     * 移除DOM节点（来自http://www.cnblogs.com/rubylouvre/archive/2009/07/17/1525637.html）
+     * 在IE中移除容器类节点，会引起内存泄露，最好是创建一个新的节点，比如div，然后将要删除的节点放入这个div中，再将div的innerHTML清空。其它的直接removeChild就可以了。
+     *
+     * @param {Node} node 需要被移除的节点
+     */
+    var removeNode = !+"\v1" ? function() {
+        var d;
+        return function(node) {
+            if (node && node.tagName != 'BODY') {
+                d = d || document.createElement('DIV');
+                d.appendChild(node);
+                d.innerHTML = '';
+            }
+        }
+    }() : function(node) {
+        if (node && node.parentNode && node.tagName != 'BODY') {
+            node.parentNode.removeChild(node);
+        }
+    };
+
+    return {
+        addSheet: addSheet,
+        removeNode: removeNode
+    };
 });
