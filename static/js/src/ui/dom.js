@@ -64,8 +64,56 @@ define(function() {
         }
     };
 
+    /**
+     * 根据类名查找元素（来自http://www.cnblogs.com/rubylouvre/archive/2009/07/24/1529640.html）
+     * @param  {string} searchClass    需要查找的类名
+     * @param  {?(Node|Document)} node 父元素或者说是查找context
+     * @param  {?string} tag           标签名，默认是*，即匹配所有标签
+     * @return {Array.<Node>}          匹配的节点数组
+     */
+    function getElementsByClassName(searchClass, node, tag) {
+        node = node || document;
+        tag = tag || "*";
+
+        var result = [];
+        if (node.getElementsByClassName) {
+            var nodes = node.getElementsByClassName(searchClass),
+                childNode;
+            for (var i = 0; childNode = nodes[i++];) {
+                if (tag !== "*" && childNode.tagName === tag.toUpperCase()) {
+                    result.push(childNode);
+                    continue;
+                }
+                result.push(childNode);
+            }
+            return result
+        }
+
+        var classes = searchClass.split(/\s+/),
+            elements = (tag === "*" && node.all) ? node.all : node.getElementsByTagName(tag),       // IE5不支持document.getElementsByTagName("*")，使用分支document.all以防错误
+            patterns = [],
+            current,
+            match;
+        var i = classes.length;
+        while (--i >= 0) {
+            patterns.push(new RegExp("(^|\\s)" + classes[i] + "(\\s|$)"));
+        }
+        var j = elements.length;
+        while (--j >= 0) {
+            current = elements[j];
+            match = false;
+            for (var k = 0, kl = patterns.length; k < kl; k++) {
+                match = patterns[k].test(current.className);
+                if (!match) break;
+            }
+            if (match) result.push(current);
+        }
+        return result;
+    }
+
     return {
         addSheet: addSheet,
-        removeNode: removeNode
+        removeNode: removeNode,
+        getElementsByClassName: getElementsByClassName
     };
 });
