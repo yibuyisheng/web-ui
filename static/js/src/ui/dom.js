@@ -90,7 +90,7 @@ define(function() {
         }
 
         var classes = searchClass.split(/\s+/),
-            elements = (tag === "*" && node.all) ? node.all : node.getElementsByTagName(tag),       // IE5不支持document.getElementsByTagName("*")，使用分支document.all以防错误
+            elements = (tag === "*" && node.all) ? node.all : node.getElementsByTagName(tag), // IE5不支持document.getElementsByTagName("*")，使用分支document.all以防错误
             patterns = [],
             current,
             match;
@@ -111,9 +111,60 @@ define(function() {
         return result;
     }
 
+    /**
+     * 添加事件回调函数（来自http://www.cnblogs.com/rubylouvre/archive/2009/07/24/1530020.html）
+     * @param {Element} el  需要添加事件处理函数的元素
+     * @param {string} type 事件名称
+     * @param {Function} fn 事件触发回调函数
+     */
+    var addEvent = (function() {
+        if (document.addEventListener) {
+            return function(el, type, fn) {
+                el.addEventListener(type, fn, false);
+            };
+        } else {
+            return function(el, type, fn) {
+                el.attachEvent('on' + type, function() {
+                    return fn.call(el, window.event);
+                });
+            }
+        }
+    })();
+
+    /**
+     * 移除事件，出处同上
+     * @param  {Element} obj 待移除事件的元素
+     * @param  {string} type 待事件名称
+     * @param  {Function} fn 待移除事件的回调函数
+     */
+    function removeEvent(obj, type, fn) {
+        if (obj.removeEventListener)
+            obj.removeEventListener(type, fn, false);
+        else if (obj.detachEvent) {
+            obj.detachEvent("on" + type, obj["e" + type + fn]);
+            obj["e" + type + fn] = null;
+        }
+    };
+
+    /**
+     * 阻止事件冒泡
+     * @param  {Event} e 需要阻止的事件
+     */
+    var stopPropagation = function(e) {
+        e = e || window.event;
+        if (!+"\v1") {
+            e.cancelBubble = true;
+        } else {
+            e.stopPropagation();
+        }
+    }
+
     return {
         addSheet: addSheet,
         removeNode: removeNode,
-        getElementsByClassName: getElementsByClassName
+        getElementsByClassName: getElementsByClassName,
+        addEvent: addEvent,
+        removeEvent: removeNode,
+        stopPropagation: stopPropagation
     };
 });
