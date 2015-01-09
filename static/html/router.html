@@ -1,0 +1,18 @@
+<script src="/static/js/lib/require.js"></script>
+<script src="/static/js/config.js"></script>
+
+<a href="javascript:;" onclick="goto('#123')">#123</a>
+
+<script>
+    (function() {
+        var location = {
+            url: function(url) {
+                window.location.hash = url;
+            }
+        };
+
+        window.goto = function(url) {
+            location.url(url);
+        };
+    })();
+</script>

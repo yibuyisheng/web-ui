@@ -66,8 +66,17 @@ alert(a);
     // $('.outer-test').offOuter(cb);
   });
 
-  require(['src/utils/utils'], function(utils) {
+  require(['src/utils/utils', 'lib/jquery'], function(utils) {
     window.utils = utils;
+
+    $(function test() {
+      console.log(this);
+
+      function fn() {
+        console.log(this);
+      }
+      fn();
+    })
   });
   </script>
 </body>

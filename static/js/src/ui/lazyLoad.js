@@ -19,9 +19,9 @@ define([
       windowLeft = $(document).scrollLeft(),
       windowRight = windowLeft + $(window).width();
 
-    return offset.top + height > windowTop && 
-      offset.top < windowBottom && 
-      offset.left + width > windowLeft && 
+    return offset.top + height > windowTop &&
+      offset.top < windowBottom &&
+      offset.left + width > windowLeft &&
       offset.left < windowRight ;
   };
 
@@ -31,7 +31,7 @@ define([
         'src': $img.attr(srcAttr)
       });
       $img.data('lazy-show', 'done');
-    } 
+    }
     return $img.data('lazy-show') === 'done';
   };
 
