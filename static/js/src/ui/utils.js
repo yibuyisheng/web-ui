@@ -1,85 +1,84 @@
 // dependence: jQuery
 
 define([
-  'lib/jquery'
-], function(
-) {
+    'lib/jquery'
+], function() {
 
-  return {
-    findMaxZIndex: function($container) {
-      var children = $container.children();
-      if (!children.length) return null;
-      
-      var ret = null;
-      children.each(function() {
-        if (this === window) return;
+    return {
+        findMaxZIndex: function($container) {
+            var children = $container.children();
+            if (!children.length) return null;
 
-        var zIndex = $(this).css("z-index");
-        if ($.isNumeric(zIndex)) {
-          if (!ret || ret < zIndex) ret = zIndex;
-        } else {
-          var result = arguments.callee.call(this, $(this));
-          if (!ret || ($.isNumeric(result) && ret < result)) ret = result;
-        }
-      });
+            var ret = null;
+            children.each(function() {
+                if (this === window) return;
 
-      return ret ? ret : 0;
-    },
-    scrollTop: function() {
-      return document.documentElement.scrollTop // 对于有doctype声明的页面则可以使用
-        || window.pageYOffset                   // safari比较特别，有自己获取scrollTop的函数
-        || document.body.scrollTop;             // 对于没有doctype声明的页面里可以使用
-    },
+                var zIndex = $(this).css("z-index");
+                if ($.isNumeric(zIndex)) {
+                    if (!ret || ret < zIndex) ret = zIndex;
+                } else {
+                    var result = arguments.callee.call(this, $(this));
+                    if (!ret || ($.isNumeric(result) && ret < result)) ret = result;
+                }
+            });
 
-    // 找到两个node相同的祖先node
-    findTheSameParent: function() {
-      var nodes = arguments,
-        rootNode = document.body;
+            return ret ? ret : 0;
+        },
+        scrollTop: function() {
+            return document.documentElement.scrollTop // 对于有doctype声明的页面则可以使用
+                || window.pageYOffset // safari比较特别，有自己获取scrollTop的函数
+                || document.body.scrollTop; // 对于没有doctype声明的页面里可以使用
+        },
 
-      var curNodes = nodes,
-        sameParent,
-        clearNodes = [];  // 暂存设置了data-counter属性的node，用于操作结束之后去掉这个属性
-      var iterate = function() {
-        var parents = [],
-          curNodesTmp = [],
-          counter,
-          parentNode;
-        for (var i = 0, il = curNodes.length; i < il; i += 1) {
+        // 找到两个node相同的祖先node
+        findTheSameParent: function() {
+            var nodes = arguments,
+                rootNode = document.body;
 
-          if (curNodes[i] !== rootNode) {
-            parentNode = curNodes[i].parentNode;
-            counter = parseInt(parentNode.getAttribute('data-counter'));
-            counter = counter ? (counter + 1) : 1;
+            var curNodes = nodes,
+                sameParent,
+                clearNodes = []; // 暂存设置了data-counter属性的node，用于操作结束之后去掉这个属性
+            var iterate = function() {
+                var parents = [],
+                    curNodesTmp = [],
+                    counter,
+                    parentNode;
+                for (var i = 0, il = curNodes.length; i < il; i += 1) {
 
-            // 如果计数器达到了nodes.length，说明共同的祖先就是这个了
-            if (counter === nodes.length) {
-              sameParent = parentNode;
+                    if (curNodes[i] !== rootNode) {
+                        parentNode = curNodes[i].parentNode;
+                        counter = parseInt(parentNode.getAttribute('data-counter'));
+                        counter = counter ? (counter + 1) : 1;
 
-              return false;
+                        // 如果计数器达到了nodes.length，说明共同的祖先就是这个了
+                        if (counter === nodes.length) {
+                            sameParent = parentNode;
+
+                            return false;
+                        }
+
+                        parentNode.setAttribute('data-counter', counter);
+                        curNodesTmp.push(parentNode);
+                        clearNodes.push(parentNode);
+                    }
+                }
+                curNodes = curNodesTmp;
+
+                return true;
+            };
+
+            while (iterate()) {
+
+            };
+
+            // 清除
+            for (var i = 0, il = clearNodes.length; i < il; i += 1) {
+                clearNodes[i].removeAttribute('data-counter');
             }
 
-            parentNode.setAttribute('data-counter', counter);
-            curNodesTmp.push(parentNode);
-            clearNodes.push(parentNode);
-          }
+            return sameParent;
         }
-        curNodes = curNodesTmp;
 
-        return true;
-      };
-
-      while (iterate()) {
-
-      };
-
-      // 清除
-      for (var i = 0, il = clearNodes.length; i < il; i += 1) {
-        clearNodes[i].removeAttribute('data-counter');
-      }
-
-      return sameParent;
-    }
-
-  };
+    };
 
 });
