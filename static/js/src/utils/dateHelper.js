@@ -1,4 +1,4 @@
-define(['utils/base'], function(base) {
+define(['src/utils/base'], function(base) {
 
     var strMap = {
         yyyy: base.bind(dateGetter, Date.prototype.getFullYear),

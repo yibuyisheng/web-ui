@@ -1,5 +1,5 @@
 // 用于界面动画的“定时器”
-define(['src/utils/utils'], function(utils) {
+define(['src/utils/arrayHelper'], function(arrayHelper) {
 
     // 外部注册进来的回调函数
     var callbacks = [];
@@ -10,7 +10,7 @@ define(['src/utils/utils'], function(utils) {
         };
     };
     var timerCallback = function() {
-        callbacks = utils.filter(callbacks, function(val, index) {
+        callbacks = arrayHelper.filter(callbacks, function(val, index) {
             var now = +(new Date());
             if (
                 val

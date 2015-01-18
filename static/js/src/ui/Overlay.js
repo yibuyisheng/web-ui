@@ -2,15 +2,15 @@
 
 define([
     'src/event/eventDealer',
-    'src/ui/utils',
+    'src/ui/domHelper',
     'lib/jquery'
 ], function(
     eventDealer,
-    uiUtils
+    domHelper
 ) {
 
     var eventDealer = eventDealer;
-    var findMaxZIndex = uiUtils.findMaxZIndex;
+    var findMaxZIndex = domHelper.findMaxZIndex;
 
     return function(options) {
         if (!arguments.callee.prototype._init) {

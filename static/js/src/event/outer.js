@@ -1,9 +1,11 @@
 // dependence: jQuery
 
 define([
-    'src/utils/utils'
+    'src/utils/arrayHelper',
+    'src/utils/base'
 ], function(
-    utils
+    arrayHelper,
+    base
 ) {
 
     var outerCallbacks = [];

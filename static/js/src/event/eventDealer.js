@@ -4,9 +4,9 @@
  * 事件管道/事件流：Model a + Model b -> Model e, Model c + Model d -> Model f, Model e + Model f -> UI
  */
 define([
-    'src/utils/utils'
+    'src/utils/base'
 ], function(
-    utils
+    base
 ) {
     // 事件处理对象
     // 需要事件机制的object都可以继承自该object

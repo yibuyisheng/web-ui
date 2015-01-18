@@ -1,6 +1,6 @@
 // dependence : jQuery, ui/utils.js[findMaxZIndex], eventDealer, Overlay, Drag
 define([
-    'src/ui/utils',
+    'src/ui/domHelper',
     'src/event/eventDealer',
     'src/ui/Overlay',
     'src/ui/Drag',

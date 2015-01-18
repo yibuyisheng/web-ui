@@ -1,83 +1,38 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title></title>
-  <style type="text/css">
-  .outer-test {width: 100px; height: 200px; background: red;}
-  .outer-test1 {width: 100px; height: 200px; background: blue;}
-  .outer-test2 {width: 50px; height: 100px; background: green;}
-  </style>
-  
-  <script>
-function a(x){
-  return x*2;
-}
-var a;
-alert(a);
-</script>
-  <script src="/static/js/lib/require.js"></script>
-  <!--<script src="/static/js/require.js"></script>-->
-  <script src="/static/js/config.js"></script>
-</head>
-<body>
-  <a href="javascript:;">基本对话框</a><br>
-  <a href="javascript:;">确认选择框</a><br>
-  <a href="javascript:;">成功</a><br>
-  <a href="javascript:;">警告</a><br>
-  <a href="javascript:;">错误</a><br>
-
-  <div class="outer-test">
-    <div class="outer-test2"></div>
-  </div>
-  <div class="outer-test1"></div>
-
-  <script type="text/javascript">
-  require(['src/ui/Dialog', 'src/event/outer', 'lib/jquery'], function(dialog, outer) {
-    $('a').eq(0).on('click', function () {
-      new dialog.Dialog({overlayVisible: false}).fadeIn('slow');
-    });
-    $('a').eq(1).on('click', function () {
-      new dialog.Confirm('确认选择？').show().
-      on('ok', function() {
-        alert('ok');
-      }).on('cancel', function() {
-        this.destroy();
-      });
-    });
-    $('a').eq(2).on('click', function() {
-      new dialog.Alert('成功啦！', 'success').show();
-    });
-    $('a').eq(3).on('click', function() {
-      new dialog.Alert('有猫腻了！', 'warn').show();
-    });
-    $('a').eq(4).on('click', function() {
-      new dialog.Alert('出错了！', 'error').show();
-    });
-
-    var cb = function() {
-      console.log(this);
-    };
-
-    outer.on($('.outer-test')[0], cb);
-    outer.off($('.outer-test')[0], cb);
-    // $('.outer-test').onOuter(cb);
-    // $('.outer-test1').onOuter(cb);
-    // $('.outer-test2').onOuter(cb);
-    // $('.outer-test').offOuter(cb);
-  });
-
-  require(['src/utils/utils', 'lib/jquery'], function(utils) {
-    window.utils = utils;
-
-    $(function test() {
-      console.log(this);
-
-      function fn() {
-        console.log(this);
-      }
-      fn();
-    })
-  });
-  </script>
-</body>
+    <head>
+        <title></title>
+        <style type="text/css">
+        .outer-test {width: 100px; height: 200px; background: red;}
+        .outer-test1 {width: 100px; height: 200px; background: blue;}
+        .outer-test2 {width: 50px; height: 100px; background: green;}
+        </style>
+        <script src="/static/js/lib/require.js"></script>
+        <script src="/static/js/config.js"></script>
+    </head>
+    <body>
+        <a href="javascript:;">基本对话框</a><br>
+        <a href="javascript:;">确认选择框</a><br>
+        <a href="javascript:;">成功</a><br>
+        <a href="javascript:;">警告</a><br>
+        <a href="javascript:;">错误</a><br>
+        <div class="outer-test">
+            <div class="outer-test2"></div>
+        </div>
+        <div class="outer-test1"></div>
+        <script type="text/javascript">
+        require([
+            'src/ui/Dialog',
+            'src/event/outer',
+            'lib/jquery'
+        ], function(
+            dialog,
+            outer
+        ) {
+            $('a').eq(0).on('click', function () {
+                new dialog.Dialog({overlayVisible: false}).fadeIn('slow');
+            });
+        });
+        </script>
+    </body>
 </html>
