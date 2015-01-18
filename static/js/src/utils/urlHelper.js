@@ -7,7 +7,7 @@ define(['utils/base'], function(base) {
 
     function getParams(url) {
         var paramSplit, paramStrs, params, urlSplit, value, _i, _len;
-        if (!isString(url)) {
+        if (!base.isString(url)) {
             return {};
         }
         urlSplit = url.split('?');
@@ -28,7 +28,7 @@ define(['utils/base'], function(base) {
 
     function buildUrl(url, params) {
         var allParams, baseParams, baseUrl, key, paramStrs, value;
-        if (!isString(url)) {
+        if (!base.isString(url)) {
             return null;
         }
         baseUrl = (url.split('?'))[0];

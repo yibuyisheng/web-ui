@@ -10,10 +10,10 @@ define(['utils/base'], function(base) {
     };
 
     function reduce(arr, callback, initialValue) {
-        if (!isArray(arr)) return;
+        if (!base.isArray(arr)) return;
 
         var reduce = Array.prototype.reduce || function(callback, initialValue) {
-            if (!isFunction(callback)) return;
+            if (!base.isFunction(callback)) return;
 
             var arr = initialValue ? Array.prototype.concat.call(this, initialValue) : this;
             if (arr.length < 2) return initialValue;
@@ -28,7 +28,7 @@ define(['utils/base'], function(base) {
     }
 
     function map(arr, fn, thisArg) {
-        if (!isArray(arr) || !isFunction(fn)) return arr;
+        if (!base.isArray(arr) || !base.isFunction(fn)) return arr;
 
         var map = Array.prototype.map || function(fn, thisArg) {
             var newArr = [];
@@ -42,7 +42,7 @@ define(['utils/base'], function(base) {
     }
 
     function filter(arr, fn, thisArg) {
-        if (!isArray(arr) || !isFunction(fn)) return arr;
+        if (!base.isArray(arr) || !base.isFunction(fn)) return arr;
 
         var filter = Array.prototype.filter || function(fn, thisArg) {
             var newArr = [];
@@ -56,7 +56,7 @@ define(['utils/base'], function(base) {
     }
 
     function forEach(arr, fn, thisArg) {
-        if (!isArray(arr) || !isFunction(fn)) return;
+        if (!base.isArray(arr) || !base.isFunction(fn)) return;
 
         var forEach = Array.prototype.forEach || function(fn, thisArg) {
             for (var i in this) {
@@ -68,7 +68,7 @@ define(['utils/base'], function(base) {
     }
 
     function some(arr, fn, thisArg) {
-        if (!isArray(arr) || !isFunction(fn)) return;
+        if (!base.isArray(arr) || !base.isFunction(fn)) return;
 
         var some = Array.prototype.some || function(fn, thisArg) {
             for (var i in arr) {
@@ -81,7 +81,7 @@ define(['utils/base'], function(base) {
     }
 
     function distinctArray(array, hashFn) {
-        if (!isFunction(hashFn)) throw new Error('need a hash function to compare each element');
+        if (!base.isFunction(hashFn)) throw new Error('need a hash function to compare each element');
         var compareMap = {};
         for (var i in array) {
             var item = array[i];
