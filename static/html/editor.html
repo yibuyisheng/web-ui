@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="/static/js/lib/require.js"></script>
+    <script src="/static/js/config.js"></script>
+</head>
+<body>
+    <iframe></iframe>
+    <button id="red">背景红色</button>
+    <button id="bold">加粗</button>
+    <script>
+    require(['src/ui/editor', 'lib/jquery'], function(editor) {
+        var ed = editor.create(document.getElementsByTagName('iframe')[0]);
+        $('#red').on('click', function() {
+            ed.execCommand('backcolor', 'red');
+        });
+        $('#bold').on('click', function() {
+            ed.execCommand('bold');
+        });
+    });
+    </script>
+</body>
+</html>
