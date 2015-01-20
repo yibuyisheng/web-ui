@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title></title>
-    <link rel="stylesheet" type="text/css" href="/static/js/lib/mocha/mocha.css">
-    <script src="/static/js/lib/mocha/mocha.js"></script>
-    <script>mocha.setup('bdd')</script>
-
-    <script src="/static/js/lib/require.js"></script>
-    <script src="/static/js/config.js"></script>
-</head>
-<body>
-<div id="mocha"></div>
-<script>
-    describe('Array', function(){
-      before(function(){
-        // ...
-      });
-
-      describe('#indexOf()', function(){
-        it('should return -1 when not present', function(){
-          [1,2,3].indexOf(4).should.equal(-1);
+    <head>
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="/static/js/lib/mocha/mocha.css">
+        <script src="/static/js/lib/mocha/mocha.js"></script>
+        <script>mocha.setup('bdd')</script>
+        <script src="/static/js/lib/require.js"></script>
+        <script src="/static/js/config.js"></script>
+    </head>
+    <body>
+        <div id="mocha"></div>
+        <script>
+        require(['src/ui/loading'], function(loading) {
+            describe('loading测试', function() {
+                it('loading ajax', function(done) {
+                    loading.ajax({
+                        url: '/static/js/src/ui/loading.js',
+                        $box: $('#mocha')
+                    }).done(function(data) {
+                        done();
+                    });
+                });
+            });
+            mocha.run();
         });
-      });
-    });
-    mocha.run();
-</script>
-</body>
+        </script>
+    </body>
 </html>

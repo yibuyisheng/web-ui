@@ -12,17 +12,23 @@ define([
     var eventDealer = eventDealer;
     var findMaxZIndex = domHelper.findMaxZIndex;
 
-    return function(options) {
+    return Overlay;
+
+    function Overlay(options) {
+        this._opts = $.extend({
+            $box: null        // 覆盖在这个box上面
+        }, options);
         if (!arguments.callee.prototype._init) {
             $.extend(arguments.callee.prototype, eventDealer, {
                 _init: function() {
                     var _this = this;
 
                     this._$overlay = $('<div></div>');
-                    $('body').append(this._$overlay);
-                    var maxZIndex = findMaxZIndex($('body'));
+                    this._opts.$box = this._opts.$box || $('body');
+                    this._opts.$box.append(this._$overlay);
+                    var maxZIndex = findMaxZIndex(this._opts.$box);
                     this._$overlay.css({
-                        position: 'fixed',
+                        position: this._opts.$box.is('body') ? 'fixed' : 'absolute',
                         display: 'none',
                         background: 'black',
                         opacity: 0.5,
@@ -34,10 +40,11 @@ define([
                     });
 
                     this._$overlay.on('click', function() {
-                        _this.trigger('click');
+                        _this.trigger('close');
                     });
                 },
                 show: function() {
+                    this._correctBoxPos();
                     return this._$overlay.show(), this;
                 },
                 fadeIn: function() {
@@ -51,11 +58,23 @@ define([
                 },
                 destroy: function() {
                     this._$overlay.remove();
+                    this._recoveryBoxPos();
+                },
+                _correctBoxPos: function() {
+                    this._originBoxPos = this._opts.$box.css('position');
+                    if (this._originBoxPos !== 'fixed'
+                        && this._originBoxPos !== 'absolute'
+                        && this._originBoxPos !== 'fixed'
+                    ) {
+                        this._opts.$box.css('position', 'relative');
+                    }
+                },
+                _recoveryBoxPos: function() {
+                    this._opts.$box.css('position', this._originBoxPos);
                 }
             });
         }
 
         this._init();
     };
-
 });
