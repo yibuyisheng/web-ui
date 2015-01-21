@@ -1,6 +1,5 @@
 define([
-    'src/event/eventDealer',
-    'lib/hammer.min.js'
+    'src/event/eventDealer'
 ], function(
     eventDealer
 ) {
