@@ -5,19 +5,19 @@ define(['src/utils/base'], function(base) {
             return dateGetter(Date.prototype.getFullYear, dt);
         },
         MM: function(dt) {
-            return dateGetter(Date.prototype.getMonth, dt) + 1;
+            return fill(dateGetter(Date.prototype.getMonth, dt) + 1, 2);
         },
         dd: function(dt) {
-            return dateGetter(Date.prototype.getDate, dt);
+            return fill(dateGetter(Date.prototype.getDate, dt), 2);
         },
         HH: function(dt) {
-            return dateGetter(Date.prototype.getHours, dt);
+            return fill(dateGetter(Date.prototype.getHours, dt), 2);
         },
         mm: function(dt) {
-            return dateGetter(Date.prototype.getMinutes, dt);
+            return fill(dateGetter(Date.prototype.getMinutes, dt), 2);
         },
         ss: function(dt) {
-            return dateGetter(Date.prototype.getSeconds, dt);
+            return fill(dateGetter(Date.prototype.getSeconds, dt), 2);
         }
     };
 
@@ -26,7 +26,14 @@ define(['src/utils/base'], function(base) {
         dateFormat: dateFormat
     };
 
-    // 时间格式化
+    function fill(num, len) {
+        var numStr = String(num);
+        while (numStr.length < len) {
+            numStr = '0' + numStr;
+        }
+        return numStr;
+    }
+
     function dateGetter(fn, dt) {
         return fn.call(dt);
     }
