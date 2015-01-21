@@ -11,7 +11,7 @@
     <body>
         <div id="mocha"></div>
         <script>
-        require(['src/ui/loading'], function(loading) {
+        require(['src/ui/loading', 'src/utils/urlHelper'], function(loading, urlHelper) {
             describe('loading测试', function() {
                 it('loading ajax', function(done) {
                     loading.ajax({
@@ -22,6 +22,15 @@
                     });
                 });
             });
+
+            describe('urlHelper.js测试', function() {
+                it('renderToHref', function() {
+                    if (urlHelper.renderToHref('hahahttp://www.baidu.com heihei') !== 'haha<a href="http://www.baidu.com">http://www.baidu.com</a> heihei') {
+                        throw new Error();
+                    }
+                });
+            });
+
             mocha.run();
         });
         </script>

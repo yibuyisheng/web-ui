@@ -2,8 +2,17 @@ define(['src/utils/base'], function(base) {
 
     return {
         getParams: getParams,
-        buildUrl: buildUrl
+        buildUrl: buildUrl,
+        renderToHref: renderToHref
     };
+
+    // 将str字符串中的url转换成带a标签的链接
+    function renderToHref(str) {
+        return str.replace(/(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|\&|-)+)/g, function() {
+            var url = arguments[0];
+            return '<a href="' + url + '">' + url + '</a>';
+        });
+    }
 
     function getParams(url) {
         var paramSplit, paramStrs, params, urlSplit, value, _i, _len;
