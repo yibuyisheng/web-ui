@@ -1,14 +1,24 @@
 define(['src/utils/base'], function(base) {
 
     var strMap = {
-        yyyy: base.bind(dateGetter, Date.prototype.getFullYear),
+        yyyy: function(dt) {
+            return dateGetter(Date.prototype.getFullYear, dt);
+        },
         MM: function(dt) {
             return dateGetter(Date.prototype.getMonth, dt) + 1;
         },
-        dd: base.bind(dateGetter, Date.prototype.getDate),
-        HH: base.bind(dateGetter, Date.prototype.getHours),
-        mm: base.bind(dateGetter, Date.prototype.getMinutes),
-        ss: base.bind(dateGetter, Date.prototype.getSeconds)
+        dd: function(dt) {
+            return dateGetter(Date.prototype.getDate, dt);
+        },
+        HH: function(dt) {
+            return dateGetter(Date.prototype.getHours, dt);
+        },
+        mm: function(dt) {
+            return dateGetter(Date.prototype.getMinutes, dt);
+        },
+        ss: function(dt) {
+            return dateGetter(Date.prototype.getSeconds, dt);
+        }
     };
 
     return {
