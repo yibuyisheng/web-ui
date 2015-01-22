@@ -30,7 +30,9 @@ define([
                     var state = {
                         isStart: false,
                         position: null, // 给当前滑动定性，究竟是变动顶部的div还是变动底部的div
-                        previousY: null
+                        previousY: null,
+
+                        offsetHeight: null
                     };
                     var _this = this;
                     this._$scroll.addEventListener('touchstart', touchstart);
@@ -44,6 +46,8 @@ define([
                     function touchstart() {
                         state.isStart = true;
                         state.previousY = event.touches[0].clientY;
+
+                        state.offsetHeight = this._$scroll.offsetHeight;
                     }
 
                     function touchmove() {
@@ -66,7 +70,7 @@ define([
                         }
                         // 应该底部动
                         else if (state.position === 'bottom'
-                            && (_this._$scroll.scrollTop + _this._$scroll.offsetHeight === _this._$scroll.scrollHeight)
+                            && (_this._$scroll.scrollTop + state.offsetHeight === _this._$scroll.scrollHeight)
                         ) {
                             var preHeight = parseFloat(_this._$bottom.style.height);
                             preHeight = preHeight ? preHeight : 0;
