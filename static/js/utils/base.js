@@ -1,7 +1,7 @@
-define(function() {
-    var toString = Object.prototype.toString;
+(function(global) {
+    global = global || {};
 
-    return {
+    global.base = {
         getClassName: getClassName,
         isObject: isObject,
         isFunction: isFunction,
@@ -13,6 +13,8 @@ define(function() {
         keys: keys,
         values: values
     };
+
+    var toString = Object.prototype.toString;
 
     function getClassName(obj) {
         return toString.call(obj).slice(8, -1);
@@ -119,4 +121,5 @@ define(function() {
         }
         return values;
     }
-});
+
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));
