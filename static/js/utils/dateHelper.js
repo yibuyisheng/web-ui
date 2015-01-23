@@ -1,4 +1,4 @@
-define(['src/utils/base'], function(base) {
+(function(global) {
 
     var strMap = {
         yyyy: function(dt) {
@@ -21,9 +21,8 @@ define(['src/utils/base'], function(base) {
         }
     };
 
-    return {
-        dateGetter: dateGetter,
-        dateFormat: dateFormat
+    global.dateHelper = {
+        format: dateFormat
     };
 
     function fill(num, len) {
@@ -43,4 +42,4 @@ define(['src/utils/base'], function(base) {
             return strMap[match](dt);
         });
     }
-});
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));
