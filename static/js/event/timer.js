@@ -1,5 +1,7 @@
 // 用于界面动画的“定时器”
-define(['src/utils/arrayHelper'], function(arrayHelper) {
+(function(global) {
+
+    var arrayHelper = global.arrayHelper;
 
     // 外部注册进来的回调函数
     var callbacks = [];
@@ -9,29 +11,9 @@ define(['src/utils/arrayHelper'], function(arrayHelper) {
             window.setTimeout(fn, 50)
         };
     };
-    var timerCallback = function() {
-        callbacks = arrayHelper.filter(callbacks, function(val, index) {
-            var now = +(new Date());
-            if (
-                val
-                && (
-                    (val.type === 'every' && now - val.preTime >= val.minInterval)
-                    || (val.type === 'once' && now - val.preTime >= val.minDelay)
-                )
-            ) {
-                val.callback();
-                if (val.type === 'once') val = null;
-                else val.preTime = now;
-            }
-
-            return val !== null;
-        });
-
-        timerFunction(timerCallback);
-    };
     timerCallback();
 
-    return {
+    global.timer = {
         // 添加timer回调函数
         add: function(fn, minInterval) {
             var fnObj = {
@@ -59,4 +41,25 @@ define(['src/utils/arrayHelper'], function(arrayHelper) {
         }
     };
 
-});
+    function timerCallback() {
+        callbacks = arrayHelper.filter(callbacks, function(val, index) {
+            var now = +(new Date());
+            if (
+                val
+                && (
+                    (val.type === 'every' && now - val.preTime >= val.minInterval)
+                    || (val.type === 'once' && now - val.preTime >= val.minDelay)
+                )
+            ) {
+                val.callback();
+                if (val.type === 'once') val = null;
+                else val.preTime = now;
+            }
+
+            return val !== null;
+        });
+
+        timerFunction(timerCallback);
+    }
+
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));

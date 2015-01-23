@@ -1,14 +1,30 @@
-// dependence: jQuery
+(function(global) {
 
-define([
-    'src/utils/arrayHelper',
-    'src/utils/base'
-], function(
-    arrayHelper,
-    base
-) {
+    var base = global.base;
+    var arrayHelper = global.arrayHelper;
 
     var outerCallbacks = [];
+    addEvent(document, 'click', function(event) {
+        var newCallbacks = [];
+        for (var i = 0, il = outerCallbacks.length; i < il; i += 1) {
+            var outerCallback = outerCallbacks[i];
+            if (outerCallback && !isIn(outerCallback.nodes, event.target)) {
+                outerCallback.callback.call(event.target);
+            }
+
+            // 注意在回调函数中可能会调用offOuter，所以此处需要移除掉为null的元素
+            if (outerCallbacks[i]) {
+                newCallbacks.push(outerCallbacks[i]);
+            }
+        }
+        outerCallbacks = newCallbacks;
+    });
+
+    global.outer = {
+        on: outer,
+        off: outerOff
+    };
+
     // 判断node的祖先节点中是否有parentNodes种的某一个
     function contains(parentNode, childNode) {
         var fn = Node.prototype.contains || function(childNode) {
@@ -27,7 +43,7 @@ define([
         return false;
     }
 
-    var addEvent = function(elem, eventName, callback) {
+    function addEvent(elem, eventName, callback) {
         if (window.addEventListener) {
             elem.addEventListener(eventName, callback, false);
         } else if (window.attachEvent) {
@@ -37,23 +53,7 @@ define([
                 callback.call(elem, window.event);
             };
         }
-    };
-
-    addEvent(document, 'click', function(event) {
-        var newCallbacks = [];
-        for (var i = 0, il = outerCallbacks.length; i < il; i += 1) {
-            var outerCallback = outerCallbacks[i];
-            if (outerCallback && !isIn(outerCallback.nodes, event.target)) {
-                outerCallback.callback.call(event.target);
-            }
-
-            // 注意在回调函数中可能会调用offOuter，所以此处需要移除掉为null的元素
-            if (outerCallbacks[i]) {
-                newCallbacks.push(outerCallbacks[i]);
-            }
-        }
-        outerCallbacks = newCallbacks;
-    });
+    }
 
     function outer(elem, callback) {
         if (!utils.isFunction(callback)) return;
@@ -64,7 +64,7 @@ define([
         });
     }
 
-    var outerOff = function(elem, callback) {
+    function outerOff(elem, callback) {
         if (!elem && !callback) return;
         if (utils.isFunction(elem)) {
             callback = elem;
@@ -101,9 +101,4 @@ define([
         }
     };
 
-    return {
-        on: outer,
-        off: outerOff
-    };
-
-});
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));
