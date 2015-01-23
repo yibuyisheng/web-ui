@@ -1,6 +1,9 @@
-define(['src/utils/base'], function(base) {
+(function(global) {
 
-    return {
+    // 依赖
+    var base = global.base;
+
+    global.arrayHelper = {
         reduce: reduce,
         map: map,
         filter: filter,
@@ -90,4 +93,4 @@ define(['src/utils/base'], function(base) {
         }
         return values(compareMap);
     }
-});
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));
