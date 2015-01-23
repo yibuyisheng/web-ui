@@ -27,7 +27,7 @@
             }
             return previousValue;
         };
-        reduce.call(arr, callback, initialValue);
+        return reduce.call(arr, callback, initialValue);
     }
 
     function map(arr, fn, thisArg) {
@@ -91,6 +91,6 @@
             var hash = hashFn(item);
             compareMap[hash] = item;
         }
-        return values(compareMap);
+        return global.base.values(compareMap);
     }
 })((window.WEBUI = window.WEBUI || {}, window.WEBUI));
