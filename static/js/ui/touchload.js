@@ -38,7 +38,9 @@
                     var state = {
                         isStart: false,
                         position: null, // 给当前滑动定性，究竟是变动顶部的div还是变动底部的div
-                        previousY: null
+                        previousY: null,
+
+                        lastMoveTime: null
                     };
                     this._$scroll.addEventListener('touchstart', touchstart);
                     this._$scroll.addEventListener('touchmove', touchmove);
@@ -56,6 +58,14 @@
 
                     function touchmove() {
                         if (!state.isStart) return;
+
+                        if (!state.lastMoveTime) {
+                            state.lastMoveTime = new Date().getTime();
+                        }
+                        // 防抖动
+                        else if (new Date().getTime() - state.lastMoveTime < 13.6) {
+                            return;
+                        }
 
                         var distance = event.touches[0].clientY - state.previousY;
                         // 第一次进来，根据这次的运动方向决定position
@@ -96,6 +106,7 @@
                             state.isStart = false;
                             state.previousY = null;
                             state.position = null;
+                            state.lastMoveTime = null;
 
                             _this._$child.style.top = null;
                             _this._$child.style.bottom = null;
