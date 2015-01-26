@@ -2,7 +2,7 @@
 <html>
     <head>
         <title></title>
-        <link rel="stylesheet" type="text/css" href="/static/lib/mocha/mocha.css">
+        <!-- <link rel="stylesheet" type="text/css" href="/static/lib/mocha/mocha.css">
         <script src="/static/lib/mocha/mocha.js"></script>
         <script>mocha.setup('bdd')</script>
         <script>
@@ -11,18 +11,21 @@
                 throw new Error('失败，测试结果不为：' + JSON.stringify(a));
             }
         }
-        </script>
+        </script> -->
         <script src="/static/js/utils/base.js"></script>
         <script src="/static/js/utils/arrayHelper.js"></script>
         <script src="/static/js/utils/dateHelper.js"></script>
         <script src="/static/js/utils/urlHelper.js"></script>
+        <script src="/static/js/ui/render.js"></script>
     </head>
     <body>
         <div id="mocha"></div>
-        <script src="/static/test/js/base-test.js"></script>
+        <button id="update">更新</button>
+        <!-- <script src="/static/test/js/base-test.js"></script>
         <script src="/static/test/js/arrayHelper-test.js"></script>
         <script src="/static/test/js/dateHelper-test.js"></script>
         <script src="/static/test/js/urlHelper-test.js"></script>
-        <script>mocha.run();</script>
+        <script src="/static/test/js/render-test.js"></script>
+        <script>mocha.run();</script> -->
     </body>
 </html>
