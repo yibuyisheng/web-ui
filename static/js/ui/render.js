@@ -72,26 +72,43 @@
         var expressions = {};
         traverse(dom, function(node) {
             if (node.nodeType === nodeEnum.ELEMENT_NODE) {
-                // if (node.getAttribute('repeat')) {
-                //     var cmtStart = document.createComment('start: ' + node.outerHTML);
-                //     var cmtEnd = document.createComment('end');
-                //     var parentNode = node.parentNode;
-                //     parentNode.replaceChild(cmtStart, node);
-                //     parentNode.insertBefore(cmtEnd, cmtStart.nextSibling);
-                //     add(node.outerHTML, [cmtStart, cmtEnd, node], function(value, opts) {
-                //         var cmtStart = opts[0];
-                //         var cmtEnd = opts[1];
-                //         var node = opts[2];
-                //     });
-                //     return;
-                // }
+                if (node.getAttribute('repeat')) {
+                    var cmtStart = document.createComment('start: ' + node.outerHTML);
+                    var cmtEnd = document.createComment('end');
+                    var parentNode = node.parentNode;
+                    if (!parentNode) return;
+                    parentNode.replaceChild(cmtStart, node);
+                    parentNode.insertBefore(cmtEnd, cmtStart.nextSibling);
+                    add(node.getAttribute('repeat'), [cmtStart, cmtEnd, node, []], function(value, opts, vm) {
+                        var cmtStart = opts[0];
+                        var cmtEnd = opts[1];
+                        var node = opts[2];
+                        var nodes = opts[3];
+
+                        for (var i in value) {
+                            var nodeClone = createDom(node.outerHTML);
+                            nodeClone.removeAttribute('repeat');
+                            var repeatItemExprs = collectExpressions(nodeClone);
+                            update(repeatItemExprs, Object.create(vm || {}, {
+                                value: {
+                                    value: value[i]
+                                },
+                                key: {
+                                    value: i
+                                }
+                            }));
+                            cmtEnd.parentNode.insertBefore(nodeClone, cmtEnd);
+                        }
+                    });
+                    return;
+                }
 
                 var attrs = node.attributes;
                 for (var i = 0, il = attrs.length; i < il; i++) {
                     var attr = attrs[i];
-                    if (!EXPRESSION_REGEXP.test(attr.value)) continue;
-                    add(attr.value, node, function(value, node) {
-                        node.setAttribute(attr.name, value);
+                    if (!attr.value.match(EXPRESSION_REGEXP).length) continue;
+                    add(attr.value, {node: node, attrName: attr.name}, function(value, opts) {
+                        opts.node.setAttribute(opts.attrName, value);
                     });
                 }
             } else if (
@@ -115,6 +132,9 @@
         }
 
         function createFn(expression) {
+            if (expression.indexOf('{{') !== 0) {
+                expression = '{{' + expression + '}}';
+            }
             var args = [];
             var fnBody = expression.replace(EXPRESSION_REGEXP, function(match) {
                 var arg = match.slice(2, -2);
@@ -157,7 +177,7 @@
             // 脏检测
             if (exprValue !== exprObj.lastValue) {
                 for (var i in exprObj.list) {
-                    exprObj.list[i].updateFn(exprValue, exprObj.list[i].node);
+                    exprObj.list[i].updateFn(exprValue, exprObj.list[i].opts, vm);
                 }
             }
             exprObj.lastValue = exprValue;

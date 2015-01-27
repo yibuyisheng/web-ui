@@ -1,10 +1,20 @@
 describe('render.js', function() {
     it('test', function() {
-        var tpl = '<div class="{{name}}">{{name}}<ul><li repeat="i in items"></li></ul></div>';
+        var tpl = [
+            '<div class="{{name}}">',
+                '{{name}}',
+                '<ul>',
+                    '<li repeat="items" class="{{value}}" data="{{name}}">',
+                        '{{value}}',
+                        '<a repeat="items">{{value}}</a>',
+                    '</li>',
+                '</ul>',
+            '</div>'
+        ].join('');
         WEBUI.render.createTag('test', tpl);
         var instances = WEBUI.render.mount('test', {
             name: 'zhangsan',
-            items: ['a', 'b', 'c']
+            items: ['a', 'b', 'c', 'd']
         });
 
         var counter = 0;
