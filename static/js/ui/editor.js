@@ -1,10 +1,6 @@
-define([
-    'src/utils/base'
-],
-function(
-    base
-) {
-    return {
+
+(function(global) {
+    global.editor = {
         create: function(iframe) {
             return new Editor(iframe);
         }
@@ -38,4 +34,4 @@ function(
 
         this._init();
     }
-});
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));

@@ -5,9 +5,13 @@
  * @param {jquery object} $box 需要移动的元素
  * @param {jquery object} $target 鼠标操作的元素
  */
-define(['src/event/timer', 'lib/jquery'], function(timer) {
+(function(global) {
 
-    return function($box, $target) {
+    global.createDrag = function($box, $target) {
+        return new Drag($box, $target);
+    };
+
+    function Drag($box, $target) {
         this._$box = $box;
         this._$target = $target;
 
@@ -57,5 +61,4 @@ define(['src/event/timer', 'lib/jquery'], function(timer) {
 
         this._init();
     };
-
-});
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));

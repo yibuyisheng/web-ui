@@ -1,19 +1,19 @@
 // dependence: jQuery
 
-define([
-    'lib/jquery'
-], function() {
+(function(global) {
 
-    return {
+    global.domHelper = {
         findMaxZIndex: findMaxZIndex,
-        scrollTop: function() {
-            return document.documentElement.scrollTop // 对于有doctype声明的页面则可以使用
-                || window.pageYOffset // safari比较特别，有自己获取scrollTop的函数
-                || document.body.scrollTop; // 对于没有doctype声明的页面里可以使用
-        },
+        scrollTop: scrollTop,
         // 找到两个node相同的祖先node
         findTheSameParent: findTheSameParent
     };
+
+    function scrollTop() {
+        return document.documentElement.scrollTop // 对于有doctype声明的页面则可以使用
+                || window.pageYOffset // safari比较特别，有自己获取scrollTop的函数
+                || document.body.scrollTop; // 对于没有doctype声明的页面里可以使用
+    }
 
     function findMaxZIndex($container) {
         var children = $container.children();
@@ -83,4 +83,4 @@ define([
         return sameParent;
     }
 
-});
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));
