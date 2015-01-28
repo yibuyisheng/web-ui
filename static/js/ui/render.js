@@ -60,7 +60,7 @@
      * expressions数据结构：
      * {
      *     '{{name}}': {
-     *         list: [{node: node, updateFn: function(value, node) {...}}], // 节点及更新节点的方法
+     *         list: [{opts: opts, updateFn: function(value, opts) {...}}], // 节点及更新节点的方法
      *         fnObj: {                                                     // 重新计算表达式值的函数
      *             args: [...],                                             // 此函数的参数名字数组（一个字符串数组）
      *             fn: function() {...}                                     // 具体的函数
