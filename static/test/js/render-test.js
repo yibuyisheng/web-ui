@@ -1,12 +1,11 @@
 describe('render.js', function() {
-    it('test', function() {
+    it.only('test', function() {
         var tpl = [
             '<div class="{{name}}">',
                 '{{name}}',
                 '<ul>',
                     '<li repeat="items" class="{{value}}" data="{{name}}">',
-                        '{{value}}',
-                        '<a repeat="items">{{value}}</a>',
+                        '{{value}}-\'\'>{{index}}',
                     '</li>',
                 '</ul>',
             '</div>'

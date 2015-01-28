@@ -73,33 +73,7 @@
         traverse(dom, function(node) {
             if (node.nodeType === nodeEnum.ELEMENT_NODE) {
                 if (node.getAttribute('repeat')) {
-                    var cmtStart = document.createComment('start: ' + node.outerHTML);
-                    var cmtEnd = document.createComment('end');
-                    var parentNode = node.parentNode;
-                    if (!parentNode) return;
-                    parentNode.replaceChild(cmtStart, node);
-                    parentNode.insertBefore(cmtEnd, cmtStart.nextSibling);
-                    add(node.getAttribute('repeat'), [cmtStart, cmtEnd, node, []], function(value, opts, vm) {
-                        var cmtStart = opts[0];
-                        var cmtEnd = opts[1];
-                        var node = opts[2];
-                        var nodes = opts[3];
-
-                        for (var i in value) {
-                            var nodeClone = createDom(node.outerHTML);
-                            nodeClone.removeAttribute('repeat');
-                            var repeatItemExprs = collectExpressions(nodeClone);
-                            update(repeatItemExprs, Object.create(vm || {}, {
-                                value: {
-                                    value: value[i]
-                                },
-                                key: {
-                                    value: i
-                                }
-                            }));
-                            cmtEnd.parentNode.insertBefore(nodeClone, cmtEnd);
-                        }
-                    });
+                    repeat(node);
                     return;
                 }
 
@@ -115,10 +89,15 @@
                 node.nodeType === nodeEnum.TEXT_NODE
                 && EXPRESSION_REGEXP.test(node.textContent)
             ) {
-                add(node.textContent, node, function(value, node) {
-                    node.textContent = value;
+                add(node.textContent, {node: node}, function(value, opts) {
+                    opts.node.textContent = value;
                 });
             }
+        }, function(node) {
+            if (node.getAttribute && node.getAttribute('repeat')) {
+                return false;
+            }
+            return true;
         });
         return expressions;
 
@@ -132,19 +111,64 @@
         }
 
         function createFn(expression) {
-            if (expression.indexOf('{{') !== 0) {
-                expression = '{{' + expression + '}}';
+            var args = [], fnBody;
+            if (expression.indexOf('{{') + 1) {
+                var args = [];
+                var fnBody = 'return \'' + expression.replace(/\'/g, '\\\'').replace(EXPRESSION_REGEXP, function() {
+                    var arg = arguments[1];
+                    args.push(arg);
+                    return '\' + ' + arg + ' + \'';
+                }) + '\'';
+            } else {
+                args.push(expression);
+                fnBody = 'return ' + expression;
             }
-            var args = [];
-            var fnBody = expression.replace(EXPRESSION_REGEXP, function(match) {
-                var arg = match.slice(2, -2);
-                args.push(arg);
-                return 'return ' + arg;
-            });
             return {
                 args: args,
                 fn: new Function(args.join(','), fnBody)
             };
+        }
+
+        // repeat节点
+        function repeat(node) {
+            var cmtStart = document.createComment('start: ' + node.outerHTML);
+            var cmtEnd = document.createComment('end');
+            var parentNode = node.parentNode;
+            parentNode.replaceChild(cmtStart, node);
+            parentNode.insertBefore(cmtEnd, cmtStart.nextSibling);
+            add(node.getAttribute('repeat'), [cmtStart, cmtEnd, node, {}], function(value, opts, vm) {
+                var cmtStart = opts[0];
+                var cmtEnd = opts[1];
+                var node = opts[2];
+                var instances = opts[3];
+
+                for (var i in value) {
+                    var instance = instances[i];
+                    if (instance) {
+                        instance.vm.value = value;
+                        instance.vm.index = i;
+                    } else {
+                        var nodeClone = createDom(node.outerHTML);
+                        nodeClone.removeAttribute('repeat');
+                        var repeatItemExprs = collectExpressions(nodeClone);
+                        instance = {
+                            dom: nodeClone,
+                            expressions: repeatItemExprs,
+                            vm: Object.create(vm || {}, {
+                                value: { value: value[i] },
+                                index: { value: i }
+                            }),
+                            update: function() {
+                                update(this.expressions, this.vm);
+                            }
+                        };
+                        instances[i] = instance;
+                        cmtEnd.parentNode.insertBefore(nodeClone, cmtEnd);
+                    }
+
+                    instance.update();
+                }
+            });
         }
     }
 
@@ -183,6 +207,5 @@
             exprObj.lastValue = exprValue;
         }
     }
-
 
 })((window.WEBUI = window.WEBUI || {}, window.WEBUI));
