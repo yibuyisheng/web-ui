@@ -1,21 +1,23 @@
 // dependence : jQuery, ui/utils.js[findMaxZIndex], eventDealer, Overlay, Drag
-define([
-    'src/ui/domHelper',
-    'src/event/eventDealer',
-    'src/ui/Overlay',
-    'src/ui/Drag',
-    'lib/jquery'
-], function(
-    uiUtils,
-    eventDealer,
-    Overlay,
-    Drag
-) {
 
-    var findMaxZIndex = uiUtils.findMaxZIndex;
-    var eventDealer = eventDealer;
-    var Overlay = Overlay;
-    var Drag = Drag;
+(function(global) {
+
+    var findMaxZIndex = global.domHelper.findMaxZIndex;
+    var eventDealer = global.eventDealer;
+    var createOverlay = global.overlay.create;
+    var createDrag = global.createDrag;
+
+    global.dialog = {
+        createDialog: function(options) {
+            return new Dialog(options);
+        },
+        createConfirm: function(content, title, opts) {
+            return new Confirm(content, title, opts);
+        },
+        createAlert: function(content, typ, opts) {
+            return new Alert(content, typ, opts);
+        }
+    };
 
     // 对话框
     var cssTpl = [
@@ -86,9 +88,9 @@ define([
                     this.$content.empty().append(this._options.content);
                     this.$foot[this._options.footVisible ? 'show' : 'hide']().empty().append(this._options.foot);
 
-                    this._options.overlayVisible && (this._overlay = global.createOverlay());
+                    this._options.overlayVisible && (this._overlay = createOverlay());
 
-                    this._options.draggable && (this._drag = global.createDrag(this._$dialog, this._$dialog.find('.title')));
+                    this._options.draggable && (this._drag = createDrag(this._$dialog, this._$dialog.find('.title')));
 
                     // 让对话框显示在最上层
                     var maxZIndex = findMaxZIndex($('body'));
@@ -335,10 +337,4 @@ define([
         arguments.callee.prototype._init.call(this);
     }
 
-    return {
-        Dialog: Dialog,
-        Confirm: Confirm,
-        Alert: Alert
-    };
-
-});
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));

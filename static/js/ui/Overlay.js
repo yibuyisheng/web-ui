@@ -1,18 +1,15 @@
 // dependence : jQuery, event/eventDealer.js, ui/utils.js[findMaxZIndex]
 
-define([
-    'src/event/eventDealer',
-    'src/ui/domHelper',
-    'lib/jquery'
-], function(
-    eventDealer,
-    domHelper
-) {
+(function(global) {
 
-    var eventDealer = eventDealer;
-    var findMaxZIndex = domHelper.findMaxZIndex;
+    var eventDealer = global.eventDealer;
+    var findMaxZIndex = global.domHelper.findMaxZIndex;
 
-    return Overlay;
+    global.overlay = {
+        create: function(options) {
+            return new Overlay(options);
+        }
+    };
 
     function Overlay(options) {
         this._opts = $.extend({
@@ -77,4 +74,5 @@ define([
 
         this._init();
     };
-});
+
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));

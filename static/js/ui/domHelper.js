@@ -32,7 +32,7 @@
             }
         });
 
-        return ret ? ret : 0;
+        return ret ? parseInt(ret) : 0;
     }
 
     function findTheSameParent() {

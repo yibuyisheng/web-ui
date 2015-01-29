@@ -6,21 +6,18 @@
  * 加载中，让用户知道当前正在加载
  */
 
-define([
-    'src/ui/Overlay',
-    'src/ui/domHelper',
-    'lib/jquery'
-], function(
-    Overlay,
-    domHelper
-) {
+(function(global) {
+
+    var createOverlay = global.overlay.create;
+    var domHelper = global.domHelper;
+
     var tpl = [
         '<div style="color:white">',
             'loading',
         '</div>'
     ].join('');
 
-    return {
+    global.loading = {
         create: create,
         ajax: ajax
     };
@@ -50,7 +47,7 @@ define([
             $.extend(Load.prototype, {
                 _init: function() {
                     var $body = $('body');
-                    this._overlay = new Overlay({
+                    this._overlay = createOverlay({
                         $box: this._opts.$box
                     });
 
@@ -131,4 +128,5 @@ define([
         }
         this._init();
     }
-});
+
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));

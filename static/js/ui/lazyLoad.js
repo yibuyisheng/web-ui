@@ -1,14 +1,13 @@
 // dependence: jQuery
 
 // 延迟加载，目前仅用于图片的延迟加载
-define([
-    'lib/jquery'
-], function(
-    $
-) {
+
+(function(global) {
+
+    global.lazyload = lazyload;
 
     // 查看元素是否位于可视区域
-    var _isInView = function($elem) {
+    function _isInView($elem) {
         var $elem = $($elem);
 
         var offset = $elem.offset(),
@@ -25,7 +24,7 @@ define([
             offset.left < windowRight;
     };
 
-    var checkImg = function($img, srcAttr) {
+    function checkImg($img, srcAttr) {
         if ($img.data('lazy-show') !== 'done' && _isInView($img)) {
             $img.attr({
                 'src': $img.attr(srcAttr)
@@ -35,7 +34,7 @@ define([
         return $img.data('lazy-show') === 'done';
     };
 
-    var lazyload = function(opts) {
+    function lazyload(opts) {
         var opts = $.extend({
             selector: 'img[lazy]',
             srcAttr: 'data-original',
@@ -48,7 +47,14 @@ define([
 
         var checkTimer;
 
-        var update = function() {
+        if (opts.skipInvisible) {
+            $container.on('scroll', update);
+            $(window).on('resize', update);
+        } else {
+            checkTimer = setInterval(update, 100);
+        }
+
+        function update() {
             var isAllShow = true;
             $lazyElems.each(function() {
                 if (!checkImg($(this), opts.srcAttr) && isAllShow) isAllShow = false;
@@ -63,15 +69,6 @@ define([
                 }
             }
         };
-
-        if (opts.skipInvisible) {
-            $container.on('scroll', update);
-            $(window).on('resize', update);
-        } else {
-            checkTimer = setInterval(update, 100);
-        }
     };
 
-    return lazyload;
-
-});
+})((window.WEBUI = window.WEBUI || {}, window.WEBUI));
