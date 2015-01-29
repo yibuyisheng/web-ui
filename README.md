@@ -14,4 +14,5 @@
 - 12、statis/js/src/utils/base.js：一些基础方法，比如类型判断、继承；
 - 13、static/js/src/utils/dateHelper.js：日期的一些辅助方法；
 - 14、static/js/src/utils/urlHelper.js：处理url的一些方法；
-- 15、static/js/src/ui/loading.js：加载中遮罩层。
+- 15、static/js/src/ui/loading.js：加载中遮罩层；
+- 16、static/js/src/ui/render.js：一个初始的ui渲染库，类似于reactjs功能。

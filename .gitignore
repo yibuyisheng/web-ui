@@ -3,3 +3,4 @@ web-ui.sublime-workspace
 node_modules
 dump.rdb
 static/dist/
+bower_components/
