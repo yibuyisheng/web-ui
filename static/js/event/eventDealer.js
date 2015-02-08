@@ -20,7 +20,7 @@
         trigger: function(eventName, data) {
             if (this._cbs && this._cbs[eventName]) {
                 this._cbs[eventName] = arrayHelper.filter(this._cbs[eventName], function(val) {
-                    if (arrayHelper.isFunction(val)) val.call(this, data);
+                    if (base.isFunction(val)) val.call(this, data);
                     return val !== null;
                 }, this);
             }
