@@ -5,7 +5,8 @@
     global.urlHelper = {
         getParams: getParams,
         buildUrl: buildUrl,
-        renderToHref: renderToHref
+        renderToHref: renderToHref,
+        encode: encode
     };
 
     // 将str字符串中的url转换成带a标签的链接
@@ -29,10 +30,10 @@
     function buildUrl(url, params) {
         var params = base.extend(getParams(url), params);
 
-        return url.split('?')[0] + '?' + _encode(params);
+        return url.split('?')[0] + '?' + encode(params);
     }
 
-    function _encode(params) {
+    function encode(params) {
         var result = [];
         for (var k in params) {
             result.push(encodeURIComponent(k) + '=' + encodeURIComponent(params[k]));
