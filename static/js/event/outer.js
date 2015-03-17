@@ -1,5 +1,6 @@
-var base = require('../utils/base.js');
-var arrayHelper = require('../utils/arrayHelper.js');
+var utilities = require('utilities');
+var base = utilities.base;
+var arrayHelper = utilities.arrayHelper;
 
 var outerCallbacks = [];
 addEvent(document, 'click', function(event) {

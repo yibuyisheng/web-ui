@@ -1,10 +1,11 @@
-require('./base.js');
-require('./ui/domHelper.js');
-require('./ui/drag.js');
-require('./ui/overlay.js');
-require('./ui/dialog.js');
-require('./ui/lazyLoad.js');
-require('./ui/loading.js');
-require('./ui/render.js');
-require('./ui/touchload.js');
-require('./ui/editor.js');
+module.exports = {
+    domHelper: require('./ui/domHelper'),
+    overlay: require('./ui/overlay'),
+    drag: require('./ui/drag'),
+    dialog: require('./ui/dialog'),
+    lazyLoad: require('./ui/lazyLoad'),
+    loading: require('./ui/loading'),
+    render: require('./ui/render'),
+    touchload: require('./ui/touchload'),
+    editor: require('./ui/editor')
+};

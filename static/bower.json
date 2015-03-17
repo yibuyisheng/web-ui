@@ -5,6 +5,7 @@
   "authors": [
     "yibuyisheng <yibuyisheng@163.com>"
   ],
+  "main": "../dist/base.js",
   "description": "web ui",
   "moduleType": [
     "globals"

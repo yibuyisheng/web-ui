@@ -1,5 +1,5 @@
 // 用于界面动画的“定时器”
-var arrayHelper = require('../utils/arrayHelper.js');
+var arrayHelper = utilities.arrayHelper;
 
 // 外部注册进来的回调函数
 var callbacks = [];
