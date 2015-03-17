@@ -1,8 +1,9 @@
-require('./utils/base.js');
-require('./utils/arrayHelper.js');
-require('./utils/dateHelper.js');
-require('./utils/models.js');
-require('./utils/urlHelper.js');
-require('./event/eventDealer.js');
-require('./event/outer.js');
-require('./event/timer.js');
+window.WEBUI = {
+    base: require('./utils/base.js'),
+    arrayHelper: require('./utils/arrayHelper.js'),
+    dateHelper: require('./utils/dateHelper.js'),
+    urlHelper: require('./utils/urlHelper.js'),
+    eventDealer: require('./event/eventDealer.js'),
+    outer: require('./event/outer.js'),
+    timer: require('./event/timer.js')
+};
