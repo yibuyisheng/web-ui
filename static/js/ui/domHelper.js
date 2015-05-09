@@ -6,7 +6,8 @@
         findMaxZIndex: findMaxZIndex,
         scrollTop: scrollTop,
         // 找到两个node相同的祖先node
-        findTheSameParent: findTheSameParent
+        findTheSameParent: findTheSameParent,
+        nodeList2Array: nodeList2Array
     };
 
     function scrollTop() {
@@ -81,6 +82,22 @@
         }
 
         return sameParent;
+    }
+
+    // NodeList 转换为 Array
+    function nodeList2Array(nodeList) {
+        var array;
+        try {
+            array = Array.prototype.slice.call(nodeList);
+        } catch (e) {
+            // 由于 IE8 及更早版本将 NodeList 实现为一个 COM 对象，
+            // 不能像使用 JScript 对象那样使用这种对象，因此 slice 会导致异常
+            array = new Array();
+            for (var i = 0, il = nodeList.length; i < il; i++) {
+                array.push(nodeList[i]);
+            }
+        }
+        return array;
     }
 
 })((window.WEBUI = window.WEBUI || {}, window.WEBUI));
