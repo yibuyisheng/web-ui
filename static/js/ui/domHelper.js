@@ -43,7 +43,17 @@
         var curNodes = nodes,
             sameParent,
             clearNodes = []; // 暂存设置了data-counter属性的node，用于操作结束之后去掉这个属性
-        var iterate = function() {
+
+        while (iterate()) {};
+
+        // 清除
+        for (var i = 0, il = clearNodes.length; i < il; i += 1) {
+            clearNodes[i].removeAttribute('data-counter');
+        }
+
+        return sameParent;
+
+        function iterate() {
             var parents = [],
                 curNodesTmp = [],
                 counter,
@@ -70,18 +80,7 @@
             curNodes = curNodesTmp;
 
             return true;
-        };
-
-        while (iterate()) {
-
-        };
-
-        // 清除
-        for (var i = 0, il = clearNodes.length; i < il; i += 1) {
-            clearNodes[i].removeAttribute('data-counter');
         }
-
-        return sameParent;
     }
 
     // NodeList 转换为 Array
