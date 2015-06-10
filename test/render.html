@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+<test></test>
+
+<script src="../static/js/ui/render.js"></script>
+<script>
+    WEBUI.render.createTag('test', '<div style="color:{{color}}">{{name}} 123<p repeat="list">{{value.title}}----{{index}}</p></div>');
+
+    var color = 'red';
+    var instances = WEBUI.render.mount('test', {
+        name: '张三',
+        color: color,
+        list: [
+            {
+                title: 'title1'
+            },
+            {
+                title: 'title2'
+            }
+        ]
+    });
+    // instances[0].vm = {name: new Date().getTime(), color: color, list: [{title: '123'}]};
+    // // debugger
+    // instances[0].update();
+    setInterval(function () {
+        color = color === 'red' ? 'blue' : 'red';
+        instances[0].vm.list.push({title: Math.random()});
+        var list = instances[0].vm.list;
+        instances[0].vm = {name: new Date().getTime(), color: color, list: list.slice()};
+        instances[0].update();
+    }, 1000);
+</script>
+</body>
+</html>

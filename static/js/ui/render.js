@@ -71,6 +71,7 @@
     function collectExpressions(dom) {
         var expressions = {};
         traverse(dom, function(node) {
+            // 元素节点
             if (node.nodeType === nodeEnum.ELEMENT_NODE) {
                 if (node.getAttribute('repeat')) {
                     repeat(node);
@@ -85,11 +86,13 @@
                         opts.node.setAttribute(opts.attrName, value);
                     });
                 }
-            } else if (
+            }
+            // 文本节点
+            else if (
                 node.nodeType === nodeEnum.TEXT_NODE
                 && EXPRESSION_REGEXP.test(node.textContent)
             ) {
-                add(node.textContent, {node: node}, function(value, opts) {
+                add(node.textContent, {node: node, originTextContent: node.textContent}, function(value, opts) {
                     opts.node.textContent = value;
                 });
             }
@@ -116,7 +119,7 @@
                 var args = [];
                 var fnBody = 'return \'' + expression.replace(/\'/g, '\\\'').replace(EXPRESSION_REGEXP, function() {
                     var arg = arguments[1];
-                    args.push(arg);
+                    args.push(arg.split('.')[0]);
                     return '\' + ' + arg + ' + \'';
                 }) + '\'';
             } else {
@@ -142,11 +145,14 @@
                 var node = opts[2];
                 var instances = opts[3];
 
+                var aliveKey = new Date().getTime() + '-' + Math.random();
                 for (var i in value) {
                     var instance = instances[i];
                     if (instance) {
-                        instance.vm.value = value;
-                        instance.vm.index = i;
+                        instance.vm = {
+                            value: value[i],
+                            index: i
+                        };
                     } else {
                         var nodeClone = createDom(node.outerHTML);
                         nodeClone.removeAttribute('repeat');
@@ -167,6 +173,15 @@
                     }
 
                     instance.update();
+                    instance.aliveKey = aliveKey;
+                }
+
+                for (var k in instances) {
+                    var removed = instances[k];
+                    if (removed.aliveKey !== aliveKey) {
+                        removed.dom.parentNode.removeChild(removed.dom);
+                        instances[k] = null;
+                    }
                 }
             });
         }
